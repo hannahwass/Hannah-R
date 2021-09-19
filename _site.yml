@@ -1,10 +1,10 @@
-name: "MyLabJournal"
+name: "Hannah's Crim-250 Website"
 navbar:
-  title: "MyLabJournal"
+  title: "Hannah's Crim-250 Website"
   left:
     - text: "Home"
       href: index.html
-    - text: "Journal"
+    - text: "Assignments"
       href: Journal.html
     - text: "Links"
       href: Links.html
