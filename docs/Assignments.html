@@ -475,7 +475,8 @@ par(mfrow=c(3,1))
 hist(dat$Murder, xlab = &quot;Number of Murder Arrests&quot;, main = &quot;Histogram of Murder Arrests&quot;)
 hist(dat$Assault , xlab = &quot;Number of Assault Arrests&quot; , main = &quot;Histogram of Assault Arrests&quot;)
 hist(dat$Rape , xlab = &quot;Number of Rape Arrests&quot; , main = &quot;Histogram of Rape Arrests&quot;)</code></pre>
-<p><img src="Assignments_files/figure-html/unnamed-chunk-7-3.png" width="480" /> What does the command par do, in your own words (you can look this up by asking R <code>?par</code>)?</p>
+<p><img src="Assignments_files/figure-html/unnamed-chunk-7-3.png" width="480" /></p>
+<p>What does the command par do, in your own words (you can look this up by asking R <code>?par</code>)?</p>
 <p>Answer: The command par is a way in which multiple plots can be viewed together.It essentially set the parameters for viewing graphs. For example, in this problem I wanted to display 3 graphs each with their own variables.The graphs all have the same y-axis (frequency) and all the x-axes are “number of.” This command allows the histograms to be viewed simultaneously and thus the data to be easily analyzed and compared.</p>
 <p>What can you learn from plotting the histograms together?</p>
 <p>Answer: By plotting the histograms together, you can learn about differences and similarities in the arrest rates for these 3 different categories.</p>
@@ -490,6 +491,8 @@ library(&#39;ggplot2&#39;)
 ggplot(dat, aes(map_id=state, fill=Murder)) + 
   geom_map(map=map_data(&quot;state&quot;)) + 
   expand_limits(x=map_data(&quot;state&quot;)$long, y=map_data(&quot;state&quot;)$lat)</code></pre>
+<p>What does this code do? Explain what each line is doing.</p>
+<p>Answer: The first two lines specify which library to find the right packages in in order to achieve the commands of the code below. The third line specifies Murder as the specific variable for the plot. The fourth line makes a map of the states filled with the state data. The fifth line designates the axes of the map and sets the plot limits, which determines the dimensions of the map.</p>
 </div>
 
 
