@@ -14,14 +14,7 @@ output:
 knitr::opts_chunk$set(message=FALSE,warning=FALSE, cache=TRUE)
 ```
 
-title: "Assignment 1"
-author: "Hannah"
-date: "9/18/2021"
-output:
-  word_document: default
-  pdf_document: default
-  html_document: default
----
+# Assignment 1
 
 ### Problem 1 
 
@@ -57,7 +50,7 @@ dat<-USArrests
 
 Use this command to make the state names into a new variable called State. 
 
-```{r, eval=FALSE}
+```{r, eval=TRUE}
 dat$state <- tolower(rownames(USArrests))
 ```
 
@@ -162,3 +155,305 @@ ggplot(dat, aes(map_id=state, fill=Murder)) +
 What does this code do? Explain what each line is doing.
 
 Answer: The first two lines specify which library to find the right packages in in order to achieve the commands of the code below. The third line specifies Murder as the specific variable for the plot. The fourth line makes a map of the states filled with the state data. The fifth line designates the axes of the map and sets the plot limits, which determines the dimensions of the map.
+
+
+
+
+
+
+
+
+# Assignment 2
+
+### Problem 1 
+
+```{r}
+# Load data
+
+# Read the data
+
+dat <- read.csv(file = "data/Assignment 2 data copy.csv")
+
+# What are the dimensions of the dataset? 
+
+dim(dat)
+``` 
+
+### Problem 2 
+
+```{r}
+## Variables
+
+# Describe the variables in the dataset.
+
+names(dat)
+
+```
+
+"mjage"= age at which respondent first used marijuana or hashish
+"cigage"= age at which respondent first started smoking cigarettes every day 
+"iralcage"= age at which respondent first tried alcohol
+"age2"= final edited ages since respondents could change their answer in the course of the survey
+"sexatract"= sexual attraction 
+"speakengl"= how well respondent speaks english
+"irsex"= gender (male or female)
+
+Answer:"mjage," "cigage," and "iralcage" are all quantitative numeric variables because they contain numerical values with measurement units and do not simply assign respondents to a group.They can also be evaluated for measures of central tendency such as mean, median, and mode."age2,""sexatract," "speakengl,"and "irsex" are all categorical variables because they assign respondents to groups and cannot be quantitatively evaluated. 
+
+
+What is this data set about? Who collected the data, what kind of sample is it, and what was the purpose of generating the data?
+This data set is about drug use and health in the US and is aptly named, The National Survey on Drug Use and Health. More specifically,it tracked trends in substance use and mental illness. It is a representative sample of the general US civilian population aged 12 and up that was collected by the Substance Abuse and Mental Health Services Administration branch of the US Department of Health and Human Services. The purpose of generating the data was to provide information that would aid in prevention and treatment and estimate its need, monitor trends in substance use/abuse, and inform public policy regarding health.
+
+### Problem 3
+```{r}
+## Age and gender
+
+# What is the age distribution of the sample like? Make sure you read the code book to know what the variable values mean.
+#Make a histogram of age. 
+
+hist(dat$age2 , main = "histogram of final age categories",  xlab= "age category")
+```
+
+Answer: The ages are weighted more toward the older age categories. Most of the respondents fell into the older age range of the data,between groups 12 and 16 and thus the ages 24-64. The majority of the data, and thus the ages lies in those two bins.
+
+Do you think this age distribution representative of the US population? Why or why not?
+
+Answer: I think this age distribution is representative of the US population because census data was used in conducting the survey.
+All 50 states plus DC were included and surveyors were sent to many houses that were randomly sampled and selected 2 members (12 or older) of the household to respond. This may be where there could be an issue with representation if younger members of the families or households were disproportionately selected.Another issue could be that they did not survey nursing homes or other institutional group quarters, which might skew the age distribution. Overall I think the methodology of sampling was such that this must be a representative sample of the age distribution of the US. 
+
+Is the sample balanced in terms of gender? If not, are there more females or males?
+
+Answer: The sample does seem to be balanced in terms of gender except bins 6 and 7 are comprised of males only and bin 8 only females.Overall there are more males than females in the sample, and in terms of the split among age categories, men make up the majority of most of them.
+
+```{r}
+# Use this code to draw a stacked bar plot to view the relationship between sex and age. What can you conclude from this plot?
+
+tab.agesex <- table(dat$irsex, dat$age2)
+barplot(tab.agesex,
+        main = "Stacked barchart",
+        xlab = "Age category", ylab = "Frequency",
+        legend.text = rownames(tab.agesex),
+        beside = FALSE) # Stacked bars (default)
+```
+
+### Problem 4 
+```{r}
+## Substance use
+
+#Make a boxplot
+
+boxplot(dat$mjage , dat$cigage , dat$iralcage , names=c("Marijuana" , "Cigarettes" , "Alcohol"))
+```
+
+For which of the three substances included in the dataset (marijuana, alcohol, and cigarettes) do individuals tend to use the substance earlier?
+
+Answer:Individuals tend to use alcohol the earliest. Based on the boxplot, it has the lowest median age as well as the lowest minimum value.
+
+### Problem 5 
+```{r}
+## Sexual attraction
+
+# What does the distribution of sexual attraction look like? Is this what you expected?
+
+#Subset the data to remove legitimate skips  
+
+newdata<-subset(dat$sexatract,subset = dat$sexatract<7 )
+
+#Make a histogram of the new sexattract data set 
+
+hist(newdata, xlab = "Sexual Attraction Rated on a Scale of 1-6", main = "Histogram of Sexual Attraction")
+
+```
+
+Answer: The distribution of sexual attraction is skewed to the right, with most of the respondents selecting "1" on the scale, which means that they are only attracted to the opposite sex. The second most frequent response was "2" which means they are mostly attracted to the opposite sex.The lowest number of the respondents said that they were not sure which was response "6." This is mostly expected because the majority of people in the US are heterosexual.
+
+```{r}
+#What is the distribution of sexual attraction by gender?
+
+#Make a data frame with sexatract and irsex variables included
+
+dat5<-data.frame(dat$sexatract, dat$irsex)
+
+table(dat5$dat.irsex, dat5$dat.sexatract)
+
+
+```
+
+Answer:More males than females responded "1" however more females than males gave "2," "3," "4," and "6" as their answers.This suggests that women in this study were more likely to be mostly attracted to the same sex, equally attracted to both,mostly attracted to the same sex. Most men in the study are strictly heterosexual, while the women seem to see more variance.This answer is based on the table I made (non-graphical EDA)
+
+### Problem 6 
+```{r}
+## English speaking
+
+# What does the distribution of English speaking look like in the sample? Is this what you might expect for a random sample of the US population?
+
+hist(dat$speakengl, main = "How Well Respondents Speak English", xlab = "English Proficiency on a Scale of 1-4 (1 being 'very well' 4 being 'not at all'", xlim = c(1,4))
+
+
+```
+
+Answer: A vast majority of the respondents report speaking English very well. While only a small proportion reported not speaking it well. No respondents reported not speaking English at all. This was definitely expected from a sample of the US population because, as English is the country's official language, most people here speak it.
+
+```{r}
+#Are there more English speaker females or males?
+
+table(dat$speakengl,dat$irsex)
+
+
+```
+
+Answer:Almost equal numbers of men and women responded that they spoke English very well (response "1"), 84 and 77 respondents respectively.7 times more men than women reported speaking English well(response "2"), while only women and no men admitted that they did not speak English well (repsonse "3").Total, there are more English speaker males than females, but this makes sense given that there are more men in the sample.
+
+
+
+
+# Exam 1
+
+### Instructions
+
+a. Create a folder in your computer (a good place would be under Crim 250, Exams). 
+
+b. Download the dataset from the Canvas website (fatal-police-shootings-data.csv) onto that folder, and save your Exam 1.Rmd file in the same folder.
+
+c. Download the README.md file. This is the codebook. 
+
+d. Load the data into an R data frame.
+```{r}
+dat <- (read.csv(file="data/fatal-police-shootings-data-copy.csv"))
+```
+
+
+### Problem 1 (10 points)
+
+a. Describe the dataset. This is the source: https://github.com/washingtonpost/data-police-shootings . Write two sentences (max.) about this.
+
+This dataset contains data for all of the fatal shootings by police in the US that have occurred since the beginning of 2015. Within the dataset is information about the name of the victim, date of shooting, whether they were armed, their age, gender, race, whether they were mentally ill, whether they were threatening, whether they were fleeing,presence of a body camera, and where it occurred.  
+
+b. How many observations are there in the data frame?
+```{r}
+dim(dat)
+```
+
+There are 6,594 different observations of 17 different variables. 
+
+c. Look at the names of the variables in the data frame. Describe what "body_camera", "flee", and "armed" represent, according to the codebook. Again, only write one sentence (max) per variable.
+```{r}
+names(dat)
+```
+
+"body_camera":Body camera refers to news reports that indicate whether the officer was wearing a body camera that may have recorded all or a portion of the incident. 
+"flee": Flee refers to whether the victim was moving away from the officer, as indicated by news reports. 
+"armed": Armed refers to whether or not the victim was in possession of a weapon (or an item that a police officer would perceive as harmful) during the time of the shooting. 
+
+d. What are three weapons that you are surprised to find in the "armed" variable? Make a table of the values in "armed" to see the options.
+```{r}
+table(dat$armed)
+```
+
+I am surprised to see beer bottle, binoculars, and air conditioner as weapons in the "armed" variable because it is difficult to conceive how these could be perceived as harmful, especially when the police officer himself has a gun. 
+
+### Problem 2 (10 points)
+
+a. Describe the age distribution of the sample. Is this what you would expect to see?
+```{r}
+hist(dat$age , xlab = "Age of Shooting Victim", main = "Distribution of Age")
+```
+
+The age of the shooting victims is most concentrated between the ages of 20 and 40. This is generally what I would expect to see because 20 year olds are the most likely age category to commit to crime any way. Also, it is unlikely that a police officer would see someone over 60 or under 15 years old as a threat, which is why these age ranges are the least frequent in the dataset. 
+
+b. To understand the center of the age distribution, would you use a mean or a median, and why? Find the one you picked.
+```{r}
+summary(dat$age)
+```
+
+To understand the center of the age distribution, you would use median because the data is skewed to the right. When data is skewed, median is a better measure of central tendency because it gives outliers or infrequent numbers less weight. The median of the age variable is 35.00. 
+
+c. Describe the gender distribution of the sample. Do you find this surprising?
+```{r}
+table(dat$gender)
+```
+
+The gender distribution is very heavily weighted toward toward males. They outnumber the females by almost 20 times. This is not surprising because males are more likely to be perceived as threatening and to be criminal offenders. 
+
+
+### Problem 3 (10 points)
+
+a. How many police officers had a body camera, according to news reports? What proportion is this of all the incidents in the data? Are you surprised that it is so high or low?
+
+```{r}
+table(dat$body_camera)
+```
+According to the news report, 910 police officers had a body camera. This is less than 14% of all of the incidents in the dataset. I am surprised that it is so low because I was under the impression that body cams were a required for all police officers to wear. 
+
+b. In  how many of the incidents was the victim fleeing? What proportion is this of the total number of incidents in the data? Is this what you would expect?
+```{r}
+table(dat$flee)
+```
+
+The victim was fleeing in 1,912 of the incidents. This represents apporoximately 1/6 of all the incidents recorded in the dataset. This is a little less than what I would expect because it is logical that a criminal would flee from a police officer in the hopes of not getting caught. 
+
+
+
+### Problem 4 (10 points) -  Answer only one of these (a or b).
+
+a. Describe the relationship between the variables "body camera" and "flee" using a stacked barplot. What can you conclude from this relationship? 
+
+*Hint 1: The categories along the x-axis are the options for "flee", each bar contains information about whether the police officer had a body camera (vertically), and the height along the y-axis shows the frequency of that category).*
+
+*Hint 2: Also, if you are unsure about the syntax for barplot, run ?barplot in R and see some examples at the bottom of the documentation. This is usually a good way to look up the syntax of R code. You can also Google it.*
+
+
+```{r}
+#$library(ggplot2) 
+#ggplot(dat, aes(fill= dat$body_camera, y= frequency, x= dat$flee)) + #geom_bar(position="stack", stat="identity") 
+#just so you know what I was thinking for my code
+
+
+
+```
+
+__Your answer here.__
+
+b. Describe the relationship between age and race by using a boxplot. What can you conclude from this relationship? 
+
+*Hint 1: The categories along the x-axis are the race categories and the height along the y-axis is age.* 
+
+*Hint 2: Also, if you are unsure about the syntax for boxplot, run ?boxplot in R and see some examples at the bottom of the documentation. This is usually a good way to look up the syntax of R code. You can also Google it.*
+
+
+```{r}
+table(dat$race)
+class(dat$race)
+dat$age
+
+class(dat$age)
+
+boxplot(dat$age~dat$race)
+```
+
+The relationship between age and race show that white offenders seem to be older, while Black offenders are typically in a lower age category. It also appears that offenders older than 40  are more likely to be white or of unknown race. You can conclude from this relationship that older age is more frequent in white offenders and younger age is mor frequent in black offenders, with hispanics, native americans, and others closer in age generally to black offenders. 
+
+
+
+
+
+
+### Extra credit (10 points)
+
+a. What does this code tell us?
+Answer: This code organizes the incidents by date and tells us the time difference among the incidents.
+
+```{r, eval=FALSE}
+mydates <- as.Date(dat$date)
+head(mydates)
+(mydates[length(mydates)] - mydates[1])
+```
+
+b. On Friday, a new report was published that was described as follows by The Guardian: "More than half of US police killings are mislabelled or not reported, study finds." Without reading this article now (due to limited time), why do you think police killings might be mislabelled or underreported?
+Answer: Police killings might be mislabelled or underreported because it makes the gvoernment and police officers look bad. The police killings are attrocities and often envoke rioting and protests. The governemnt may see that it is in their best interest if these incidents are underreported to tamp down on backlash and avoid accountability. 
+
+c. Regarding missing values in problem 4, do you see any? If so, do you think that's all that's missing from the data?
+Answer: There are some missing values in the variable age. I think it is likely that there is also more missing from the data.
+
+
+

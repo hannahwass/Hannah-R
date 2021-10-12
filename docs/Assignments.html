@@ -343,7 +343,8 @@ div.tocify {
 </div>
 
 
-<p>title: “Assignment 1” author: “Hannah” date: “9/18/2021” output: word_document: default pdf_document: default html_document: default —</p>
+<div id="assignment-1" class="section level1">
+<h1>Assignment 1</h1>
 <div id="problem-1" class="section level3">
 <h3>Problem 1</h3>
 <p>Install the datasets package on the console below using <code>install.packages("datasets")</code>. Now load the library.</p>
@@ -493,6 +494,624 @@ ggplot(dat, aes(map_id=state, fill=Murder)) +
   expand_limits(x=map_data(&quot;state&quot;)$long, y=map_data(&quot;state&quot;)$lat)</code></pre>
 <p>What does this code do? Explain what each line is doing.</p>
 <p>Answer: The first two lines specify which library to find the right packages in in order to achieve the commands of the code below. The third line specifies Murder as the specific variable for the plot. The fourth line makes a map of the states filled with the state data. The fifth line designates the axes of the map and sets the plot limits, which determines the dimensions of the map.</p>
+</div>
+</div>
+<div id="assignment-2" class="section level1">
+<h1>Assignment 2</h1>
+<div id="problem-1-1" class="section level3">
+<h3>Problem 1</h3>
+<pre class="r"><code># Load data
+
+# Read the data
+
+dat &lt;- read.csv(file = &quot;data/Assignment 2 data copy.csv&quot;)
+
+# What are the dimensions of the dataset? 
+
+dim(dat)</code></pre>
+<pre><code>## [1] 171   7</code></pre>
+</div>
+<div id="problem-2-1" class="section level3">
+<h3>Problem 2</h3>
+<pre class="r"><code>## Variables
+
+# Describe the variables in the dataset.
+
+names(dat)</code></pre>
+<pre><code>## [1] &quot;mjage&quot;     &quot;cigage&quot;    &quot;iralcage&quot;  &quot;age2&quot;      &quot;sexatract&quot; &quot;speakengl&quot;
+## [7] &quot;irsex&quot;</code></pre>
+<p>“mjage”= age at which respondent first used marijuana or hashish “cigage”= age at which respondent first started smoking cigarettes every day “iralcage”= age at which respondent first tried alcohol “age2”= final edited ages since respondents could change their answer in the course of the survey “sexatract”= sexual attraction “speakengl”= how well respondent speaks english “irsex”= gender (male or female)</p>
+<p>Answer:“mjage,” “cigage,” and “iralcage” are all quantitative numeric variables because they contain numerical values with measurement units and do not simply assign respondents to a group.They can also be evaluated for measures of central tendency such as mean, median, and mode.“age2,”“sexatract,” “speakengl,”and “irsex” are all categorical variables because they assign respondents to groups and cannot be quantitatively evaluated.</p>
+<p>What is this data set about? Who collected the data, what kind of sample is it, and what was the purpose of generating the data? This data set is about drug use and health in the US and is aptly named, The National Survey on Drug Use and Health. More specifically,it tracked trends in substance use and mental illness. It is a representative sample of the general US civilian population aged 12 and up that was collected by the Substance Abuse and Mental Health Services Administration branch of the US Department of Health and Human Services. The purpose of generating the data was to provide information that would aid in prevention and treatment and estimate its need, monitor trends in substance use/abuse, and inform public policy regarding health.</p>
+</div>
+<div id="problem-3-1" class="section level3">
+<h3>Problem 3</h3>
+<pre class="r"><code>## Age and gender
+
+# What is the age distribution of the sample like? Make sure you read the code book to know what the variable values mean.
+#Make a histogram of age. 
+
+hist(dat$age2 , main = &quot;histogram of final age categories&quot;,  xlab= &quot;age category&quot;)</code></pre>
+<p><img src="Assignments_files/figure-html/unnamed-chunk-11-1.png" width="672" /></p>
+<p>Answer: The ages are weighted more toward the older age categories. Most of the respondents fell into the older age range of the data,between groups 12 and 16 and thus the ages 24-64. The majority of the data, and thus the ages lies in those two bins.</p>
+<p>Do you think this age distribution representative of the US population? Why or why not?</p>
+<p>Answer: I think this age distribution is representative of the US population because census data was used in conducting the survey. All 50 states plus DC were included and surveyors were sent to many houses that were randomly sampled and selected 2 members (12 or older) of the household to respond. This may be where there could be an issue with representation if younger members of the families or households were disproportionately selected.Another issue could be that they did not survey nursing homes or other institutional group quarters, which might skew the age distribution. Overall I think the methodology of sampling was such that this must be a representative sample of the age distribution of the US.</p>
+<p>Is the sample balanced in terms of gender? If not, are there more females or males?</p>
+<p>Answer: The sample does seem to be balanced in terms of gender except bins 6 and 7 are comprised of males only and bin 8 only females.Overall there are more males than females in the sample, and in terms of the split among age categories, men make up the majority of most of them.</p>
+<pre class="r"><code># Use this code to draw a stacked bar plot to view the relationship between sex and age. What can you conclude from this plot?
+
+tab.agesex &lt;- table(dat$irsex, dat$age2)
+barplot(tab.agesex,
+        main = &quot;Stacked barchart&quot;,
+        xlab = &quot;Age category&quot;, ylab = &quot;Frequency&quot;,
+        legend.text = rownames(tab.agesex),
+        beside = FALSE) # Stacked bars (default)</code></pre>
+<p><img src="Assignments_files/figure-html/unnamed-chunk-12-1.png" width="672" /></p>
+</div>
+<div id="problem-4-1" class="section level3">
+<h3>Problem 4</h3>
+<pre class="r"><code>## Substance use
+
+#Make a boxplot
+
+boxplot(dat$mjage , dat$cigage , dat$iralcage , names=c(&quot;Marijuana&quot; , &quot;Cigarettes&quot; , &quot;Alcohol&quot;))</code></pre>
+<p><img src="Assignments_files/figure-html/unnamed-chunk-13-1.png" width="672" /></p>
+<p>For which of the three substances included in the dataset (marijuana, alcohol, and cigarettes) do individuals tend to use the substance earlier?</p>
+<p>Answer:Individuals tend to use alcohol the earliest. Based on the boxplot, it has the lowest median age as well as the lowest minimum value.</p>
+</div>
+<div id="problem-5-1" class="section level3">
+<h3>Problem 5</h3>
+<pre class="r"><code>## Sexual attraction
+
+# What does the distribution of sexual attraction look like? Is this what you expected?
+
+#Subset the data to remove legitimate skips  
+
+newdata&lt;-subset(dat$sexatract,subset = dat$sexatract&lt;7 )
+
+#Make a histogram of the new sexattract data set 
+
+hist(newdata, xlab = &quot;Sexual Attraction Rated on a Scale of 1-6&quot;, main = &quot;Histogram of Sexual Attraction&quot;)</code></pre>
+<p><img src="Assignments_files/figure-html/unnamed-chunk-14-1.png" width="672" /></p>
+<p>Answer: The distribution of sexual attraction is skewed to the right, with most of the respondents selecting “1” on the scale, which means that they are only attracted to the opposite sex. The second most frequent response was “2” which means they are mostly attracted to the opposite sex.The lowest number of the respondents said that they were not sure which was response “6.” This is mostly expected because the majority of people in the US are heterosexual.</p>
+<pre class="r"><code>#What is the distribution of sexual attraction by gender?
+
+#Make a data frame with sexatract and irsex variables included
+
+dat5&lt;-data.frame(dat$sexatract, dat$irsex)
+
+table(dat5$dat.irsex, dat5$dat.sexatract)</code></pre>
+<pre><code>##    
+##      1  2  3  4  5  6 99
+##   1 82  3  0  1  2  1  2
+##   2 54 13  9  2  1  0  1</code></pre>
+<p>Answer:More males than females responded “1” however more females than males gave “2,” “3,” “4,” and “6” as their answers.This suggests that women in this study were more likely to be mostly attracted to the same sex, equally attracted to both,mostly attracted to the same sex. Most men in the study are strictly heterosexual, while the women seem to see more variance.This answer is based on the table I made (non-graphical EDA)</p>
+</div>
+<div id="problem-6-1" class="section level3">
+<h3>Problem 6</h3>
+<pre class="r"><code>## English speaking
+
+# What does the distribution of English speaking look like in the sample? Is this what you might expect for a random sample of the US population?
+
+hist(dat$speakengl, main = &quot;How Well Respondents Speak English&quot;, xlab = &quot;English Proficiency on a Scale of 1-4 (1 being &#39;very well&#39; 4 being &#39;not at all&#39;&quot;, xlim = c(1,4))</code></pre>
+<p><img src="Assignments_files/figure-html/unnamed-chunk-16-1.png" width="672" /></p>
+<p>Answer: A vast majority of the respondents report speaking English very well. While only a small proportion reported not speaking it well. No respondents reported not speaking English at all. This was definitely expected from a sample of the US population because, as English is the country’s official language, most people here speak it.</p>
+<pre class="r"><code>#Are there more English speaker females or males?
+
+table(dat$speakengl,dat$irsex)</code></pre>
+<pre><code>##    
+##      1  2
+##   1 84 77
+##   2  7  1
+##   3  0  2</code></pre>
+<p>Answer:Almost equal numbers of men and women responded that they spoke English very well (response “1”), 84 and 77 respondents respectively.7 times more men than women reported speaking English well(response “2”), while only women and no men admitted that they did not speak English well (repsonse “3”).Total, there are more English speaker males than females, but this makes sense given that there are more men in the sample.</p>
+</div>
+</div>
+<div id="exam-1" class="section level1">
+<h1>Exam 1</h1>
+<div id="instructions" class="section level3">
+<h3>Instructions</h3>
+<ol style="list-style-type: lower-alpha">
+<li><p>Create a folder in your computer (a good place would be under Crim 250, Exams).</p></li>
+<li><p>Download the dataset from the Canvas website (fatal-police-shootings-data.csv) onto that folder, and save your Exam 1.Rmd file in the same folder.</p></li>
+<li><p>Download the README.md file. This is the codebook.</p></li>
+<li><p>Load the data into an R data frame.</p></li>
+</ol>
+<pre class="r"><code>dat &lt;- (read.csv(file=&quot;data/fatal-police-shootings-data-copy.csv&quot;))</code></pre>
+</div>
+<div id="problem-1-10-points" class="section level3">
+<h3>Problem 1 (10 points)</h3>
+<ol style="list-style-type: lower-alpha">
+<li>Describe the dataset. This is the source: <a href="https://github.com/washingtonpost/data-police-shootings" class="uri">https://github.com/washingtonpost/data-police-shootings</a> . Write two sentences (max.) about this.</li>
+</ol>
+<p>This dataset contains data for all of the fatal shootings by police in the US that have occurred since the beginning of 2015. Within the dataset is information about the name of the victim, date of shooting, whether they were armed, their age, gender, race, whether they were mentally ill, whether they were threatening, whether they were fleeing,presence of a body camera, and where it occurred.</p>
+<ol start="2" style="list-style-type: lower-alpha">
+<li>How many observations are there in the data frame?</li>
+</ol>
+<pre class="r"><code>dim(dat)</code></pre>
+<pre><code>## [1] 6594   17</code></pre>
+<p>There are 6,594 different observations of 17 different variables.</p>
+<ol start="3" style="list-style-type: lower-alpha">
+<li>Look at the names of the variables in the data frame. Describe what “body_camera”, “flee”, and “armed” represent, according to the codebook. Again, only write one sentence (max) per variable.</li>
+</ol>
+<pre class="r"><code>names(dat)</code></pre>
+<pre><code>##  [1] &quot;id&quot;                      &quot;name&quot;                   
+##  [3] &quot;date&quot;                    &quot;manner_of_death&quot;        
+##  [5] &quot;armed&quot;                   &quot;age&quot;                    
+##  [7] &quot;gender&quot;                  &quot;race&quot;                   
+##  [9] &quot;city&quot;                    &quot;state&quot;                  
+## [11] &quot;signs_of_mental_illness&quot; &quot;threat_level&quot;           
+## [13] &quot;flee&quot;                    &quot;body_camera&quot;            
+## [15] &quot;longitude&quot;               &quot;latitude&quot;               
+## [17] &quot;is_geocoding_exact&quot;</code></pre>
+<p>“body_camera”:Body camera refers to news reports that indicate whether the officer was wearing a body camera that may have recorded all or a portion of the incident. “flee”: Flee refers to whether the victim was moving away from the officer, as indicated by news reports. “armed”: Armed refers to whether or not the victim was in possession of a weapon (or an item that a police officer would perceive as harmful) during the time of the shooting.</p>
+<ol start="4" style="list-style-type: lower-alpha">
+<li>What are three weapons that you are surprised to find in the “armed” variable? Make a table of the values in “armed” to see the options.</li>
+</ol>
+<pre class="r"><code>table(dat$armed)</code></pre>
+<pre><code>## 
+##                                                   air conditioner 
+##                              207                                1 
+##                       air pistol                   Airsoft pistol 
+##                                1                                3 
+##                               ax                         barstool 
+##                               24                                1 
+##                     baseball bat          baseball bat and bottle 
+##                               20                                1 
+## baseball bat and fireplace poker           baseball bat and knife 
+##                                1                                1 
+##                            baton                           BB gun 
+##                                6                               15 
+##               BB gun and vehicle                     bean-bag gun 
+##                                1                                1 
+##                      beer bottle                       binoculars 
+##                                3                                1 
+##                     blunt object                           bottle 
+##                                5                                1 
+##                    bow and arrow                       box cutter 
+##                                1                               13 
+##                            brick              car, knife and mace 
+##                                2                                1 
+##                          carjack                            chain 
+##                                1                                3 
+##                        chain saw                         chainsaw 
+##                                2                                1 
+##                            chair              claimed to be armed 
+##                                4                                1 
+##               contractor&#39;s level                   cordless drill 
+##                                1                                1 
+##                         crossbow                          crowbar 
+##                                9                                5 
+##                        fireworks                         flagpole 
+##                                1                                1 
+##                       flashlight                      garden tool 
+##                                2                                2 
+##                      glass shard                          grenade 
+##                                4                                1 
+##                              gun                      gun and car 
+##                             3798                               12 
+##                    gun and knife                  gun and machete 
+##                               22                                3 
+##                    gun and sword                  gun and vehicle 
+##                                1                               17 
+##              guns and explosives                           hammer 
+##                                3                               18 
+##                       hand torch                          hatchet 
+##                                1                               14 
+##                  hatchet and gun                         ice pick 
+##                                2                                1 
+##                incendiary device                            knife 
+##                                2                              955 
+##                knife and vehicle                 lawn mower blade 
+##                                1                                2 
+##                          machete                  machete and gun 
+##                               51                                1 
+##                     meat cleaver                  metal hand tool 
+##                                6                                2 
+##                     metal object                       metal pipe 
+##                                5                               16 
+##                       metal pole                       metal rake 
+##                                4                                1 
+##                      metal stick                       microphone 
+##                                3                                1 
+##                       motorcycle                         nail gun 
+##                                1                                1 
+##                              oar                       pellet gun 
+##                                1                                3 
+##                              pen                     pepper spray 
+##                                1                                2 
+##                         pick-axe                    piece of wood 
+##                                4                                7 
+##                             pipe                        pitchfork 
+##                                7                                2 
+##                             pole                   pole and knife 
+##                                3                                2 
+##                  railroad spikes                             rock 
+##                                1                                7 
+##                    samurai sword                         scissors 
+##                                4                                9 
+##                      screwdriver                     sharp object 
+##                               16                               14 
+##                           shovel                            spear 
+##                                7                                2 
+##                          stapler              straight edge razor 
+##                                1                                5 
+##                            sword                            Taser 
+##                               23                               34 
+##                        tire iron                       toy weapon 
+##                                4                              226 
+##                          unarmed                     undetermined 
+##                              421                              188 
+##                   unknown weapon                          vehicle 
+##                               82                              213 
+##                  vehicle and gun              vehicle and machete 
+##                                8                                1 
+##                    walking stick                       wasp spray 
+##                                1                                1 
+##                           wrench 
+##                                1</code></pre>
+<p>I am surprised to see beer bottle, binoculars, and air conditioner as weapons in the “armed” variable because it is difficult to conceive how these could be perceived as harmful, especially when the police officer himself has a gun.</p>
+</div>
+<div id="problem-2-10-points" class="section level3">
+<h3>Problem 2 (10 points)</h3>
+<ol style="list-style-type: lower-alpha">
+<li>Describe the age distribution of the sample. Is this what you would expect to see?</li>
+</ol>
+<pre class="r"><code>hist(dat$age , xlab = &quot;Age of Shooting Victim&quot;, main = &quot;Distribution of Age&quot;)</code></pre>
+<p><img src="Assignments_files/figure-html/unnamed-chunk-22-1.png" width="672" /></p>
+<p>The age of the shooting victims is most concentrated between the ages of 20 and 40. This is generally what I would expect to see because 20 year olds are the most likely age category to commit to crime any way. Also, it is unlikely that a police officer would see someone over 60 or under 15 years old as a threat, which is why these age ranges are the least frequent in the dataset.</p>
+<ol start="2" style="list-style-type: lower-alpha">
+<li>To understand the center of the age distribution, would you use a mean or a median, and why? Find the one you picked.</li>
+</ol>
+<pre class="r"><code>summary(dat$age)</code></pre>
+<pre><code>##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA&#39;s 
+##    6.00   27.00   35.00   37.12   45.00   91.00     308</code></pre>
+<p>To understand the center of the age distribution, you would use median because the data is skewed to the right. When data is skewed, median is a better measure of central tendency because it gives outliers or infrequent numbers less weight. The median of the age variable is 35.00.</p>
+<ol start="3" style="list-style-type: lower-alpha">
+<li>Describe the gender distribution of the sample. Do you find this surprising?</li>
+</ol>
+<pre class="r"><code>table(dat$gender)</code></pre>
+<pre><code>## 
+##         F    M 
+##    3  293 6298</code></pre>
+<p>The gender distribution is very heavily weighted toward toward males. They outnumber the females by almost 20 times. This is not surprising because males are more likely to be perceived as threatening and to be criminal offenders.</p>
+</div>
+<div id="problem-3-10-points" class="section level3">
+<h3>Problem 3 (10 points)</h3>
+<ol style="list-style-type: lower-alpha">
+<li>How many police officers had a body camera, according to news reports? What proportion is this of all the incidents in the data? Are you surprised that it is so high or low?</li>
+</ol>
+<pre class="r"><code>table(dat$body_camera)</code></pre>
+<pre><code>## 
+## False  True 
+##  5684   910</code></pre>
+<p>According to the news report, 910 police officers had a body camera. This is less than 14% of all of the incidents in the dataset. I am surprised that it is so low because I was under the impression that body cams were a required for all police officers to wear.</p>
+<ol start="2" style="list-style-type: lower-alpha">
+<li>In how many of the incidents was the victim fleeing? What proportion is this of the total number of incidents in the data? Is this what you would expect?</li>
+</ol>
+<pre class="r"><code>table(dat$flee)</code></pre>
+<pre><code>## 
+##                     Car        Foot Not fleeing       Other 
+##         491        1058         845        3952         248</code></pre>
+<p>The victim was fleeing in 1,912 of the incidents. This represents apporoximately 1/6 of all the incidents recorded in the dataset. This is a little less than what I would expect because it is logical that a criminal would flee from a police officer in the hopes of not getting caught.</p>
+</div>
+<div id="problem-4-10-points---answer-only-one-of-these-a-or-b." class="section level3">
+<h3>Problem 4 (10 points) - Answer only one of these (a or b).</h3>
+<ol style="list-style-type: lower-alpha">
+<li>Describe the relationship between the variables “body camera” and “flee” using a stacked barplot. What can you conclude from this relationship?</li>
+</ol>
+<p><em>Hint 1: The categories along the x-axis are the options for “flee”, each bar contains information about whether the police officer had a body camera (vertically), and the height along the y-axis shows the frequency of that category).</em></p>
+<p><em>Hint 2: Also, if you are unsure about the syntax for barplot, run ?barplot in R and see some examples at the bottom of the documentation. This is usually a good way to look up the syntax of R code. You can also Google it.</em></p>
+<pre class="r"><code>#$library(ggplot2) 
+#ggplot(dat, aes(fill= dat$body_camera, y= frequency, x= dat$flee)) + #geom_bar(position=&quot;stack&quot;, stat=&quot;identity&quot;) 
+#just so you know what I was thinking for my code</code></pre>
+<p><strong>Your answer here.</strong></p>
+<ol start="2" style="list-style-type: lower-alpha">
+<li>Describe the relationship between age and race by using a boxplot. What can you conclude from this relationship?</li>
+</ol>
+<p><em>Hint 1: The categories along the x-axis are the race categories and the height along the y-axis is age.</em></p>
+<p><em>Hint 2: Also, if you are unsure about the syntax for boxplot, run ?boxplot in R and see some examples at the bottom of the documentation. This is usually a good way to look up the syntax of R code. You can also Google it.</em></p>
+<pre class="r"><code>table(dat$race)</code></pre>
+<pre><code>## 
+##         A    B    H    N    O    W 
+##  752  106 1553 1083   91   47 2962</code></pre>
+<pre class="r"><code>class(dat$race)</code></pre>
+<pre><code>## [1] &quot;character&quot;</code></pre>
+<pre class="r"><code>dat$age</code></pre>
+<pre><code>##    [1] 53 47 23 32 39 18 22 35 34 47 25 31 41 30 37 28 42 36 49 71 33 39 23 29
+##   [25] 34 43 24 29 34 75 68 34 27 39 24 36 33 41 48 21 24 27 32 67 49 42 36 36
+##   [49] 19 54 25 17 29 56 61 45 26 40 26 59 17 68 24 34 39 26 29 33 45 26 35 31
+##   [73] 42 48 31 54 42 17 59 23 38 29 45 28 37 28 28 51 36 59 25 26 74 33 27 57
+##   [97] 46 41 61 45 49 45 35 23 46 23 21 35 27 37 16 51 34 34 25 56 26 24 43 31
+##  [121] 32 30 50 20 31 38 77 NA 41 51 50 47 37 41 16 42 39 30 27 43 42 21 49 34
+##  [145] 31 27 24 34 28 28 40 37 17 35 49 43 20 25 25 26 28 45 36 34 19 37 48 29
+##  [169] 43 40 35 27 58 46 30 64 31 23 37 37 31 39 31 54 53 25 35 41 59 36 32 53
+##  [193] 26 29 27 28 52 49 24 24 20 22 49 64 47 39 18 31 16 20 36 63 34 24 21 44
+##  [217] 60 42 37 36 21 24 29 57 38 23 27 28 63 53 35 26 42 41 56 39 23 40 29 26
+##  [241] 54 49 36 21 27 37 36 32 44 27 63 38 17 31 34 50 51 56 23 25 31 32 60 42
+##  [265] 39 28 22 29 31 28 54 21 38 66 36 83 32 27 26 31 22 41 41 51 72 52 47 18
+##  [289] 29 23 43 45 40 44 25 37 59 35 35 18 51 30 31 39 26 51 19 46 49 63 20 25
+##  [313] 24 58 29 76 45 20 58 21 27 26 33 27 25 53 53 42 22 52 36 30 34 44 53 36
+##  [337] 29 32 46 18 72 38 21 35 58 48 31 47 34 30 28 28 40 46 37 53 41 42 45 34
+##  [361] 18 27 54 35 17 29 38 26 52 39 22 29 43 24 32 40 47 40 25 31 36 51 24 62
+##  [385] 39 24 57 20 33 60 32 40 18 36 35 55 19 39 40 47 23 26 26 18 33 56 46 36
+##  [409] 50 45 53 45 42 27 30 36 58 54 30 69 30 45 22 28 19 40 86 46 28 22 17 46
+##  [433] 35 35 28 15 22 28 31 40 48 58 44 21 50 23 24 49 60 35 29 20 34 22 49 32
+##  [457] 26 41 61 49 28 35 29 51 52 24 32 45 60 23 59 46 33 39 27 42 37 23 36 19
+##  [481] 35 43 25 20 42 29 42 31 18 33 59 47 39 37 35 28 59 62 50 68 27 17 21 38
+##  [505] 54 20 25 31 35 60 24 27 36 20 24 23 41 20 76 43 29 35 30 24 23 29 25 27
+##  [529] 50 19 24 23 22 46 65 43 35 54 47 24 35 25 27 26 34 32 47 44 31 44 30 60
+##  [553] 50 36 59 33 19 56 45 22 41 34 53 48 25 30 47 33 34 52 29 63 49 18 71 35
+##  [577] 55 31 18 51 39 20 29 40 42 22 19 24 30 53 25 28 33 24 59 46 15 41 77 22
+##  [601] 24 34 48 24 27 27 27 49 30 38 26 30 53 23 34 30 43 29 47 35 40 18 24 29
+##  [625] 44 17 19 50 57 30 38 31 29 26 64 39 57 36 36 21 53 30 34 53 45 22 22 46
+##  [649] 27 30 54 29 42 41 28 61 23 25 43 29 20 40 45 33 76 47 45 40 37 27 36 23
+##  [673] 49 21 32 35 27 59 28 45 45 19 25 37 33 59 31 35 29 32 41 31 44 23 45 39
+##  [697] 67 29 25 28 21 32 51 39 27 31 50 61 32 47 46 57 23 56 24 27 23 26 34 21
+##  [721] 32 33 55 26 48 35 19 45 28 42 17 30 21 45 33 46 23 37 43 40 59 31 46 37
+##  [745] 28 28 55 29 26 45 27 31 51 49 27 18 39 46 19 62 49 31 38 40 35 34 44 23
+##  [769] 43 NA 31 27 46 18 59 57 15 25 50 31 35 27 20 27 45 33 27 22 28 31 28 53
+##  [793] 30 39 40 30 21 35 21 47 38 36 53 34 34 30 28 47 49 NA 36 45 21 18 25 29
+##  [817] 57 34 35 NA 18 62 29 25 30 24 52 33 56 49 20 62 62  6 30 57 18 47 48 20
+##  [841] 30 36 51 55 48 20 25 26 45 35 34 36 22 63 31 25 57 32 42 52 25 25 31 39
+##  [865] 16 24 32 25 28 28 21 30 58 47 41 25 44 34 27 34 29 39 50 24 47 45 28 50
+##  [889] 49 45 24 32 23 52 37 26 58 50 22 53 69 23 29 25 18 31 23 18 35 27 28 26
+##  [913] 32 36 66 21 47 24 60 61 38 51 35 46 48 36 33 66 51 34 55 54 NA 36 25 24
+##  [937] 28 36 20 49 NA 51 21 30 32 33 56 48 39 19 45 33 52 51 23 25 24 22 32 58
+##  [961] 26 30 31 34 48 NA 21 39 25 30 61 56 29 19 35 36 54 24 23 18 31 41 55 19
+##  [985] 38 36 34 52 28 50 NA 55 39 23 30 54 37 37 30 27 22 29 39 33 52 28 54 38
+## [1009] 32 34 26 50 37 45 56 45 32 12 49 58 29 60 40 39 26 24 34 27 44 25 55 19
+## [1033] 52 31 26 24 38 33 28 27 39 29 36 55 28 40 33 37 39 43 38 55 52 32 31 27
+## [1057] 40 31 30 26 32 33 19 33 29 41 29 38 64 42 46 62 42 37 25 36 21 30 53 31
+## [1081] 22 24 36 47 54 43 38 30 51 55 16 23 36 27 33 17 22 22 29 41 67 36 52 56
+## [1105] 35 45 30 24 29 53 32 22 24 19 29 50 29 26 39 52 51 48 30 37 30 35 32 25
+## [1129] 35 31 30 23 41 45 46 36 31 32 38 33 45 38 22 48 36 26 39 16 58 27 26 21
+## [1153] 37 56 38 18 35 23 41 44 24 39 22 37 36 41 27 66 30 34 22 51 42 41 49 45
+## [1177] 45 42 41 27 37 22 21 50 23 25 51 46 23 43 37 20 45 16 30 26 24 38 28 29
+## [1201] 34 38 43 23 33 40 38 53 29 30 49 60 25 24 21 23 61 54 62 16 25 28 76 25
+## [1225] 33 51 34 30 44 24 29 48 19 22 39 36 55 46 34 27 33 18 33 51 50 46 33 25
+## [1249] 52 18 43 34 31 65 37 30 36 25 69 48 50 52 44 60 40 20 45 44 40 25 43 27
+## [1273] 19 39 30 28 22 16 40 38 20 35 52 26 54 38 52 26 53 35 22 31 32 37 28 18
+## [1297] 41 15 38 41 52 48 29 51 21 24 18 30 33 60 28 26 24 44 34 21 36 37 53 24
+## [1321] 45 48 42 33 55 28 25 28 52 59 52 39 18 40 36 38 26 NA 29 37 29 21 33 23
+## [1345] 26 59 29 33 28 35 33 24 NA 28 19 43 59 34 35 23 36 46 44 20 30 29 35 36
+## [1369] 22 31 63 38 31 27 35 22 28 26 22 57 31 43 24 29 43 NA 21 19 48 25 59 50
+## [1393] 58 25 32 53 38 70 33 36 NA 21 51 43 18 33 34 31 35 31 31 23 25 25 21 49
+## [1417] 63 43 34 38 52 68 NA 29 32 50 31 27 31 29 23 61 33 18 80 43 50 47 54 22
+## [1441] 43 38 36 30 59 21 34 17 37 25 30 23 20 19 50 24 25 20 37 44 22 31 25 NA
+## [1465] 29 36 50 42 42 26 19 59 36 51 27 22 30 28 63 32 26 25 27 61 30 NA 37 41
+## [1489] 25 24 44 63 58 30 35 50 40 24 19 34 18 21 NA 29 49 24 37 32 65 37 33 63
+## [1513] 30 40 38 50 41 41 39 44 23 32 56 33 63 31 57 26 39 42 29 43 56 31 50 36
+## [1537] 50 49 31 34 36 29 32 18 50 36 17 19 24 24 20 33 41 47 18 31 27 36 40 59
+## [1561] 32 38 18 23 43 67 32 22 31 43 34 51 31 54 69 58 26 31 59 25 20 57 56 64
+## [1585] 34 69 45 14 44 59 33 54 22 49 23 38 53 36 29 42 36 32 53 30 25 18 55 27
+## [1609] 37 29 40 36 38 29 59 47 22 31 29 54 71 36 34 49 36 43 53 31 32 63 41 26
+## [1633] 82 49 37 24 35 56 28 22 59 36 36 21 38 60 18 23 NA 38 40 22 38 25 25 36
+## [1657] NA NA 44 36 35 25 65 31 70 25 55 35 25 32 38 32 64 55 69 37 31 86 25 25
+## [1681] 13 32 69 34 46 29 29 40 42 25 45 55 22 61 46 30 56 35 22 43 43 49 23 41
+## [1705] 33 30 25 52 32 46 48 38 26 32 28 53 38 18 32 37 18 20 28 18 16 36 57 49
+## [1729] 31 26 51 28 35 57 36 42 NA 49 21 39 53 62 41 40 50 27 19 26 44 30 31 33
+## [1753] 22 50 38 46 23 24 26 38 26 32 50 17 39 28 66 42 34 38 24 28 29 23 58 21
+## [1777] 45 38 40 19 46 25 25 37 25 36 32 33 24 37 38 45 31 34 23 38 39 55 31 76
+## [1801] 59 40 23 64 56 26 35 49 36 56 59 34 43 31 17 32 33 43 31 23 26 45 19 36
+## [1825] 41 53 24 NA 47 NA 40 29 22 21 38 48 25 37 37 56 25 26 35 25 48 29 55 21
+## [1849] 15 24 18 19 27 45 36 34 23 43 19 45 37 23 26 20 59 33 48 50 18 23 41 41
+## [1873] 55 29 31 25 38 NA 83 22 33 36 38 26 29 55 47 52 49 37 36 20 31 NA 30 NA
+## [1897] 35 35 36 39 30 44 24 53 73 31 28 18 32 60 36 48 33 44 20 37 72 52 31 46
+## [1921] NA 31 25 46 38 25 NA 24 19 55 NA 31 53 NA 48 29 30 33 61 35 71 41 36 28
+## [1945] 52 21 NA 31 46 32 33 42 17 35 23 21 44 53 63 18 51 64 45 20 41 23 25 42
+## [1969] 41 31 50 38 44 38 21 32 23 41 41 38 54 20 26 29 47 28 48 34 37 33 36 43
+## [1993] 32 29 39 40 21 50 19 28 16 49 44 25 39 44 50 57 57 33 21 52 27 60 25 34
+## [2017] 22 26 27 29 30 32 18 37 54 50 28 59 24 34 25 25 17 48 45 53 18 50 36 45
+## [2041] 42 NA 23 31 26 57 18 27 41 33 22 38 26 45 68 56 23 45 41 33 22 50 52 35
+## [2065] 18 34 51 18 29 34 25 17 NA 26 33 25 31 25 18 45 25 23 55 37 33 27 32 NA
+## [2089] 31 26 32 53 19 53 35 64 24 33 55 17 48 21 22 30 34 35 32 22 46 27 18 33
+## [2113] 26 27 26 51 63 38 25 39 41 26 30 33 54 38 24 47 62 30 33 23 39 41 46 36
+## [2137] 66 27 40 25 20 43 40 33 34 27 25 37 32 25 38 50 26 70 38 41 91 NA 25 29
+## [2161] 24 40 51 30 28 33 23 23 20 56 36 18 43 16 29 25 34 32 58 36 32 25 59 25
+## [2185] 25 42 36 59 21 19 45 NA 42 27 45 51 42 24 39 18 26 35 53 54 36 56 51 45
+## [2209] 28 36 73 26 41 59 28 45 27 46 34 30 46 47 32 65 19 22 39 38 68 49 37 33
+## [2233] 25 36 36 30 39 28 28 25 57 33 24 NA 33 56 56 16 47 33 32 21 64 19 26 25
+## [2257] 17 55 25 43 39 24 70 79 16 35 15 23 53 20 27 53 32 57 26 53 32 25 15 59
+## [2281] 35 33 32 49 46 25 20 48 NA 24 18 67 26 54 15 27 26 62 24 32 29 15 25 40
+## [2305] 39 34 36 24 50 50 NA 30 35 46 51 37 41 41 48 27 29 47 NA 34 48 41 25 24
+## [2329] 38 28 47 65 58 33 43 24 37 31 65 59 74 21 24 NA 23 59 33 34 30 30 NA 22
+## [2353] 35 37 20 62 18 24 17 27 51 29 34 18 17 55 44 27 66 45 47 34 37 54 50 21
+## [2377] 21 35 75 33 45 48 58 30 44 82 29 25 53 60 19 63 50 35 45 24 36 35 33 66
+## [2401] 54 20 40 41 30 32 24 37 28 48 30 64 21 28 36 40 32 50 28 33 37 17 20 34
+## [2425] 37 24 47 20 56 24 47 56 36 35 NA 37 45 41 23 37 32 23 33 23 37 19 39 53
+## [2449] 51 25 45 NA 28 36 32 39 46 53 42 34 29 53 45 24 51 35 27 33 15 30 22 23
+## [2473] 50 28 34 24 54 26 39 34 27 48 47 54 33 40 58 55 47 42 29 40 23 23 25 52
+## [2497] 43 37 32 70 36 24 24 38 52 27 22 42 70 49 59 41 34 31 23 28 33 16 35 26
+## [2521] 62 25 25 31 35 46 39 26 37 32 31 48 29 32 28 43 39 37 39 42 33 25 29 45
+## [2545] 27 28 57 15 33 35 47 31 36 54 24 35 32 28 45 29 36 23 17 20 33 49 NA 31
+## [2569] 35 24 54 41 50 46 45 20 37 34 54 65 28 60 26 25 32 44 32 NA 42 66 22 51
+## [2593] 64 30 71 30 48 56 26 28 19 24 44 28 47 18 26 33 34 62 24 55 68 22 46 27
+## [2617] 32 22 54 32 45 36 NA 37 47 30 31 44 52 NA 67 16 29 42 31 41 45 50 26 22
+## [2641] 76 58 32 19 25 48 39 31 50 15 48 32 21 37 21 40 33 25 55 53 NA 27 35 25
+## [2665] 31 70 40 25 38 26 27 NA 28 40 44 39 24 32 31 50 31 50 45 44 48 39 30 44
+## [2689] 28 24 27 34 41 26 38 33 22 40 34 48 37 67 35 29 28 40 31 51 47 52 28 35
+## [2713] 25 NA 34 58 24 22 46 55 61 43 44 35 29 57 42 44 25 20 32 34 18 31 24 35
+## [2737] 34 26 55 38 23 54 30 44 37 27 43 25 30 35 31 35 37 25 34 33 33 32 46 34
+## [2761] 46 40 27 17 46 50 41 23 33 25 27 39 22 37 27 28 56 71 NA 53 43 44 39 56
+## [2785] 24 35 30 31 20 35 31 49 54 48 32 35 30 32 31 14 25 32 35 27 23 55 43 62
+## [2809] 25 NA 50 19 41 55 19 67 24 44 23 51 29 48 22 NA 59 68 25 23 46 25 30 56
+## [2833] 24 18 34 27 26 15 26 32 17 32 43 26 51 39 43 31 22 26 40 64 30 59 NA 24
+## [2857] 32 37 33 42 37 33 62 46 69 24 42 71 49 35 19 40 34 22 16 69 24 28 26 48
+## [2881] NA 51 50 NA NA 20 34 57 NA 30 27 NA 52 52 48 56 24 NA 33 56 35 NA  6 30
+## [2905] 26 51 40 62 32 26 46 20 25 NA 28 44 31 40 46 28 30 38 34 36 25 28 38 20
+## [2929] 37 30 35 31 36 39 37 32 65 42 65 30 49 66 28 27 31 46 28 35 24 17 39 21
+## [2953] 21 57 27 62 40 38 27 54 27 51 NA 25 46 20 32 27 21 60 44 23 31 43 39 54
+## [2977] 22 36 37 42 22 42 32 30 53 27 72 29 34 26 22 16 31 58 23 44 46 61 17 46
+## [3001] 35 36 28 37 47 35 40 38 24 18 38 54 27 62 66 47 19 27 23 42 43 42 45 21
+## [3025] 43 45 33 38 33 46 52 46 40 20 39 35 31 32 56 37 32 28 26 38 27 NA NA 43
+## [3049] 49 16 35 19 59 29 65 37 22 40 35 39 36 78 25 41 63 48 42 39 NA 84 33 52
+## [3073] 48 NA 30 29 27 41 57 27 58 59 39 28 28 23 55 33 41 23 45 37 21 27 39 37
+## [3097] 22 26 27 37 58 62 25 36 NA 27 37 25 40 22 29 20 33 48 47 40 29 29 44 36
+## [3121] 31 48 49 38 70 41 NA 28 33 44 65 NA 35 25 40 36 55 19 70 37 53 84 46 29
+## [3145] NA 27 32 32 27 38 20 45 32 48 57 34 16 47 61 32 31 46 27 31 26 31 NA 27
+## [3169] 49 26 28 62 34 50 NA 23 40 50 50 27 35 32 56 20 56 39 47 25 21 18 36 35
+## [3193] 29 32 20 30 40 48 NA 23 42 20 25 28 34 41 24 29 33 44 31 26 51 64 29 61
+## [3217] 44 39 35 39 60 42 27 21 33 60 24 41 41 34 23 38 58 49 27 34 34 70 44 30
+## [3241] 81 40 27 26 18 59 56 22 26 34 23 36 48 33 24 25 20 45 29 34 23 29 44 39
+## [3265] 30 28 71 25 61 39 50 NA 23 39 45 NA 34 31 55 39 32 44 24 36 41 25 39 40
+## [3289] 32 45 31 32 48 49 48 18 48 25 27 37 44 27 NA NA 41 42 36 89 37 22 56 35
+## [3313] 36 46 26 41 38 42 47 26 64 59 NA NA 49 44 48 27 67 24 26 28 21 54 24 51
+## [3337] 59 21 73 39 32 38 32 26 55 50 49 48 65 37 37 45 33 46 33 51 51 33 51 52
+## [3361] 24 55 28 36 54 38 24 20 54 53 36 24 34 59 34 NA 29 24 77 30 36 36 58 47
+## [3385] 49 31 25 20 30 33 29 NA 31 51 42 67 NA 23 34 51 19 29 23 46 42 21 55 NA
+## [3409] 43 32 NA 34 40 55 20 24 43 56 47 33 20 28 50 36 47 36 49 34 41 29 34 34
+## [3433] 22 26 32 NA 44 21 NA 29 18 33 28 NA 40 40 53 37 47 30 48 33 44 65 20 17
+## [3457] 55 33 29 44 37 32 31 NA 20 30 25 NA 47 48 38 32 18 29 30 36 39 36 36 54
+## [3481] 27 45 19 36 33 56 NA 33 60 26 52 40 33 41 35 32 34 26 62 33 55 38 43 38
+## [3505] 27 52 NA 37 NA 34 41 40 53 21 45 34 22 25 16 37 68 25 34 23 25 57 27 51
+## [3529] 30 33 NA 19 22 37 19 33 38 45 39 21 56 27 50 16 18 38 32 33 71 30 39 19
+## [3553] 44 54 29 NA 56 64 25 43 18 36 24 30 53 60 32 25 44 32 33 NA NA 35 23 27
+## [3577] 53 35 41 57 18 34 49 31 29 33 38 43 58 29 68 62 39 59 24 70 42 26 24 48
+## [3601] NA 54 48 37 40 28 43 49 35 21 40 32 48 32 31 NA 58 30 21 15 30 28 21 42
+## [3625] 33 NA 36 38 34 23 44 20 41 18 29 37 41 25 20 34 37 18 72 17 45 49 64 36
+## [3649] 61 24 70 40 21 27 23 33 45 19 28 63 NA 43 39 53 57 32 38 36 46 31 40 31
+## [3673] 50 29 40 25 31 23 54 44 43 37 55 40 26 29 29 44 42 20 34 41 29 19 32 23
+## [3697] 41 37 24 54 58 40 27 40 23 33 26 36 38 25 45 NA 31 48 43 51 36 39 22 24
+## [3721] 36 25 30 76 39 26 49 21 31 NA 22 34 27 26 84 17 17 55 22 41 58 45 29 19
+## [3745] 18 NA 61 18 23 38 19 63 21 25 35 50 34 NA NA 26 61 18 37 27 24 37 45 28
+## [3769] 44 30 30 34 27 28 42 32 24 17 26 35 25 65 33 25 29 18 19 39 61 36 72 48
+## [3793] 67 68 NA 34 36 33 30 61 41 52 26 NA 39 36 47 NA 25 63 24 38 22 59 55 29
+## [3817] 18 29 25 48 60 NA 49 27 NA 65 41 71 33 22 52 42 48 24 NA 21 20 59 46 23
+## [3841] 32 23 19 64 35 41 42 NA 35 33 32 37 46 37 19 65 30 43 18 27 41 41 33 53
+## [3865] 42 46 51 16 41 24 23 50 41 23 33 25 30 58 47 22 27 29 43 18 19 37 42 57
+## [3889] 35 50 60 35 46 47 NA NA 31 24 27 27 NA NA NA 23 57 56 36 NA NA 24 34 17
+## [3913] 21 35 34 56 35 46 42 49 44 45 36 45 34 18 26 28 35 20 33 39 63 27 33 27
+## [3937] 31 33 39 27 32 29 81 28 50 55 42 NA NA 36 38 38 35 42 53 33 70 29 26 20
+## [3961] 30 19 NA 48 58 38 28 34 43 45 62 18 25 38 33 39 58 48 14 18 22 46 NA NA
+## [3985] 57 32 31 64 35 42 30 26 37 21 20 46 NA 20 46 24 26 60 48 69 25 29 58 59
+## [4009] 46 55 27 30 52 45 51 27 47 52 24 45 47 68 40 18 35 80 44 31 20 48 43 25
+## [4033] 38 34 58 38 29 40 49 25 32 21 57 28 25 58 34 34 24 32 58 20 19 46 28 47
+## [4057] 47 34 NA 45 17 34 48 37 32 20 31 16 24 39 26 30 36 28 21 36 28 24 29 44
+## [4081] 41 38 40 20 27 51 48 40 21 29 34 20 47 29 49 33 46 35 NA 40 36 63 27 17
+## [4105] 22 22 36 21 31 56 32 25 47 NA 23 34 51 35 46 59 40 30 34 44 31 51 34 45
+## [4129] 32 31 41 29 47 30 27 27 38 33 42 25 47 53 77 48 33 36 22 29 52 61 29 37
+## [4153] 26 32 19 45 22 57 46 27 26 30 18 25 51 40 47 38 39 30 43 42 25 22 30 33
+## [4177] 24 31 25 28 19 31 29 48 53 50 55 NA 37 30 26 36 24 35 42 37 28 32 33 27
+## [4201] 21 47 57 20 34 34 30 29 28 39 54 27 32 32 47 33 42 NA 24 24 42 34 46 40
+## [4225] 30 42 30 63 18 29 42 32 46 50 29 29 51 23 43 23 47 45 42 26 29 49 17 NA
+## [4249] 45 NA 51 37 NA 28 52 76 37 NA 37 25 35 35 61 33 34 59 32 31 49 31 29 25
+## [4273] 26 NA 39 43 26 36 45 45 54 43 NA 30 NA 58 39 40 36 27 20 17 59 47 45 46
+## [4297] 34 46 26 21 29 33 32 47 22 NA 41 28 56 41 35 59 30 48 49 41 21 62 NA 32
+## [4321] 22 58 32 26 35 27 35 38 23 59 23 43 41 56 45 28 NA 54 39 24 41 27 70 NA
+## [4345] 35 26 58 46 39 33 20 38 41 32 NA 24 19 27 40 61 56 52 20 35 17 22 NA 45
+## [4369] 20 18 28 38 NA 53 31 48 20 35 22 18 34 74 33 38 38 26 41 29 19 61 34 35
+## [4393] NA 43 50 32 50 54 35 33 18 50 41 37 76 NA 19 40 61 61 22 52 23 67 44 23
+## [4417] NA 39 53 39 26 38 49 34 47 34 58 17 21 37 43 61 28 41 43 23 36 23 26 36
+## [4441] 32 62 33 32 69 35 46 46 22 20 30 49 43 52 62 56 36 40 52 35 35 73 39 53
+## [4465] 23 19 41 39 28 28 NA 53 27 31 38 38 41 49 56 NA 62 69 NA 31 37 NA 28 46
+## [4489] 42 46 21 27 30 36 54 48 55 34 45 19 32 35 32 25 24 65 29 49 19 56 39 43
+## [4513] 57 49 18 27 52 NA 52 37 62 57 45 46 49 38 31 51 NA 51 20 37 49 31 26 NA
+## [4537] 25 NA 62 27 33 38 69 39 NA 18 27 50 54 57 NA 29 39 46 31 34 52 33 NA 37
+## [4561] 67 52 62 30 28 16 NA NA 51 35 23 NA 23 47 36 37 49 49 NA 35 17 43 30 34
+## [4585] 46 29 62 53 28 65 43 42 30 40 51 24 27 41 47 26 20 18 NA 29 35 77 25 31
+## [4609] 54 33 76 28 31 NA 53 33 37 NA 57 NA 36 39 43 44 33 49 18 74 21 57 29 58
+## [4633] 74 63 28 31 41 67 63 64 32 49 28 NA NA 31 NA 20 38 27 38 37 36 35 50 75
+## [4657] 32 34 61 24 37 33 55 42 37 55 31 54 37 48 28 31 48 58 56 40 19 28 32 21
+## [4681] 57 17 22 26 NA 31 61 54 28 30 30 28 26 28 21 31 27 34 22 46 29 38 51 61
+## [4705] 34 30 33 21 39 37 36 55 34 47 61 29 29 44 53 31 45 19 40 33 NA NA 45 NA
+## [4729] 27 63 50 25 39 42 25 24 NA 67 NA 62 34 33 56 46 41 38 22 42 29 56 32 NA
+## [4753] 31 21 31 48 58 32 45 37 20 34 31 26 32 66 37 38 29 44 28 22 59 56 20 39
+## [4777] 30 27 NA 37 52 35 33 NA 27 NA 27 41 28 26 NA 34 34 38 32 50 55 51 18 42
+## [4801] 36 37 28 24 34 22 42 48 51 40 34 30 31 54 46 60 40 NA 40 68 68 60 16 25
+## [4825] 20 21 38 28 18 NA 26 31 58 31 41 41 41 23 17 35 65 51 47 42 42 31 23 50
+## [4849] 47 66 55 68 31 24 30 34 23 43 22 43 22 42 65 18 23 52 40 27 34 25 28 NA
+## [4873] 27 41 63 27 29 38 29 47 28 38 21 44 61 25 40 26 57 57 24 34 46 38 24 34
+## [4897] 65 60 56 59 23 35 35 16 NA 42 43 52 31 27 31 34 76 29 34 NA 18 51 25 28
+## [4921] 37 NA 23 57 49 24 29 20 25 26 69 26 41 31 30 25 57 17 27 30 18 50 21 28
+## [4945] 28 25 33 59 34 27 37 30 41 47 34 24 25 NA 47 49 31 47 52 29 45 51 55 35
+## [4969] 50 31 47 35 66 19 19 43 57 31 41 39 24 20 32 22 60 40 37 34 22 30 26 29
+## [4993] 32 32 27 31 35 19 34 32 43 22 43 27 39 37 20 34 32 41 15 52 29 53 24 41
+## [5017] 17 44 63 56 23 32 26 41 56 33 37 41 38 32 67 46 45 23 48 31 47 40 40 34
+## [5041] 51 33 25 42 41 19 37 21 63 NA 58 16 31 33 40 34 29 27 23 38 17 75 26 40
+## [5065] NA 30 36 83 27 28 20 38 39 19 23 16 23 56 35 30 30 30 54 NA 36 33 39 22
+## [5089] 49 45 45 30 30 21 NA 31 34 73 49 39 37 73 NA 31 25 41 24 27 NA 32 33 43
+## [5113] 65 84 29 31 57 37 29 47 44 38 32 21 47 26 30 62 41 50 NA 48 31 30 32 30
+## [5137] 20 38 25 47 19 35 58 NA 18 55 42 39 61 51 28 33 47 39 31 18 23 30 28 55
+## [5161] 46 50 34 32 45 31 19 53 55 32 46 26 NA 51 49 46 22 38 44 37 52 29 29 NA
+## [5185] 19 66 40 30 69 27 26 59 62 NA 39 67 54 29 37 33 31 38 28 45 59 17 19 36
+## [5209] 39 NA 33 48 31 29 51 54 35 56 NA 36 31 33 39 58 39 24 48 28 31 NA 43 33
+## [5233] 37 24 40 28 24 27 40 31 38 35 42 34 42 28 24 53 67 59 61 48 26 28 33 32
+## [5257] 26 50 38 29 27 28 43 21 36 24 NA 32 26 21 54 44 69 45 26 43 38 28 36 21
+## [5281] 23 56 33 40 21 20 21 20 47 38 31 51 19 21 48 47 42 30 47 57 27 33 25 50
+## [5305] NA 37 24 30 49 26 47 30 42 31 33 29 42 38 25 49 39 64 28 32 69 29 57 30
+## [5329] NA 45 23 40 60 22 28 36 57 44 52 43 38 28 35 33 NA 37 61 22 42 47 18 47
+## [5353] 61 38 58 50 31 30 34 35 53 31 35 26 22 NA 32 35 39 44 39 46 49 32 53 25
+## [5377] 36 65 22 33 39 44 25 36 42 60 24 22 37 26 35 39 81 31 38 59 59 36 28 26
+## [5401] 62 27 23 25 22 21 26 31 24 27 31 50 48 NA 38 19 18 35 25 24 35 19 22 33
+## [5425] 43 63 43 40 22 NA 31 27 34 37 26 27 30 38 33 40 25 57 31 58 68 57 48 26
+## [5449] 34 62 30 34 31 32 58 28 17 34 30 70 35 40 62 36 28 37 49 49 60 20 31 23
+## [5473] 26 36 47 28 59 31 43 17 32 28 24 39 22 23 60 33 28 24 24 35 51 33 30 22
+## [5497] 49 37 NA 51 61 NA 45 41 49 34 22 26 32 47 21 25 37 42 41 39 28 49 NA 56
+## [5521] 38 17 63 34 30 44 39 36 67 29 30 35 44 55 33 22 51 26 60 45 25 21 34 39
+## [5545] 26 42 39 32 48 35 50 40 48 48 31 39 NA NA 41 32 51 54 52 35 27 67 30 27
+## [5569] 65 36 35 37 37 34 60 39 21 NA 43 37 39 42 31 29 35 47 NA 31 30 31 47 39
+## [5593] 41 17 29 38 36 52 43 44 25 26 29 36 58 26 50 18 48 37 53 33 38 22 61 34
+## [5617] 40 49 54 51 33 37 47 41 18 NA 49 41 48 31 88 NA 27 27 NA 55 37 45 39 26
+## [5641] 41 46 22 33 32 52 39 26 NA 28 40 30 44 42 38 66 29 43 30 21 43 57 27 27
+## [5665] 41 NA 38 39 33 43 46 20 32 30 41 27 24 47 44 62 48 54 29 24 47 32 41 25
+## [5689] 29 29 21 52 29 24 27 36 23 28 23 30 30 45 48 47 NA 57 25 27 46 NA 49 53
+## [5713] 21 41 NA 32 37 43 43 NA 37 46 39 19 43 48 61 NA 44 26 45 35 30 35 43 63
+## [5737] 35 62 25 NA 26 NA 30 NA 33 19 NA 35 53 27 27 64 20 38 35 34 44 35 30 21
+## [5761] 30 43 42 27 44 36 30 43 26 38 25 39 35 55 38 59 20 56 33 52 26 33 60 30
+## [5785] 36 32 25 37 26 43 56 34 33 58 18 25 22 18 29 27 36 44 NA 61 37 52 39 NA
+## [5809] 18 16 19 41 31 38 40 66 38 35 50 NA 38 32 39 28 42 18 37 39 66 35 25 30
+## [5833] 43 27 43 37 25 75 34 37 49 41 NA 15 37 41 30 62 31 74 NA 27 43 32 33 38
+## [5857] 28 28 28 47 62 20 42 60 23 34 35 60 67 NA 19 28 28 37 56 44 40 27 27 22
+## [5881] 27 23 55 79 47 47 37 23 40 35 36 31 60 36 29 52 26 34 46 NA 28 29 34 33
+## [5905] 37 49 25 34 41 65 38 32 NA 34 50 47 45 45 19 39 39 43 32 31 30 40 47 33
+## [5929] 35 28 31 47 NA 30 18 18 28 29 21 21 37 23 19 39 39 63 39 37 17 38 49 27
+## [5953] 49 28 NA 28 18 36 27 27 35 26 34 40 24 47 47 91 46 32 37 52 37 18 48 28
+## [5977] 49 NA 45 31 32 54 23 30 43 36 26 27 48 24 65 25 24 NA 46 27 56 32 55 38
+## [6001] 21 19 NA 33 27 34 NA 38 43 50 61 NA NA 48 37 26 55 60 NA 61 29 41 39 60
+## [6025] 34 58 57 19 NA 52 30 56 39 30 18 34 34 30 33 NA 36 43 25 26 52 60 28 23
+## [6049] 29 27 34 49 37 38 33 45 27 21 27 25 39 20 38 29 32 44 NA NA 28 32 51 50
+## [6073] 30 33 44 51 39 37 34 27 57 30 26 39 40 NA 27 37 38 30 39 NA 22 35 24 44
+## [6097] 33 37 29 26 41 29 39 27 36 43 32 17 54 46 NA 41 17 43 44 NA 27 35 43 30
+## [6121] 30 67 19 29 42 49 32 31 43 24 24 NA 25 51 28 30 34 21 62 37 22 36 NA 44
+## [6145] 35 50 79 46 NA 29 41 48 79 24 60 44 34 35 35 18 51 32 25 32 36 26 38 13
+## [6169] 33 41 32 31 40 35 27 22 57 35 47 25 36 NA NA 22 NA 25 23 40 26 32 21 28
+## [6193] 16 41 25 23 40 26 24 44 NA 40 50 31 26 48 30 27 NA 31 20 28 17 35 27 16
+## [6217] 58 67 36 28 46 29 NA 26 22 29 25 33 25 46 51 60 29 26 52 30 31 28 52 27
+## [6241] 39 16 37 28 59 42 31 37 52 41 26 29 32 34 20 NA 21 25 36 28 30 62 23 57
+## [6265] 37 27 49 47 52 54 NA 34 56 62 24 29 27 30 45 33 28 24 NA 39 49 34 35 32
+## [6289] 32 32 16 22 21 19 24 52 31 31 44 23 NA NA NA 63 31 38 34 21 30 27 55 39
+## [6313] 26 25 34 38 80 32 48 29 33 31 71 47 NA 37 48 43 24 27 34 32 45 NA 29 42
+## [6337] 28 34 29 44 47 32 39 47 33 38 36 64 53 39 70 31 20 34 30 65 54 52 25 28
+## [6361] 48 NA 56 29 35 44 NA 40 NA 35 31 40 19 28 20 25 31 40 17 27 33 39 26 29
+## [6385] 32 40 NA 39 NA 40 40 45 48 52 29 30 54 54 23 60 NA NA 37 39 29 25 24 NA
+## [6409] NA 35 32 58 51 29 33 56 54 40 49 32 NA 36 52 32 NA 33 NA 34 NA 64 53 22
+## [6433] 34 37 24 36 NA 22 21 32 NA NA 64 51 21 36 30 NA 16 35 NA 43 50 19 35 31
+## [6457] 43 25 40 22 31 38 NA 39 NA 55 60 19 56 31 44 39 31 22 76 22 NA 21 35 22
+## [6481] 35 36 49 22 21 40 NA NA 63 48 21 71 31 35 41 34 NA 73 NA 38 35 80 NA 29
+## [6505] NA 40 42 27 27 72 50 29 28 34 26 NA 34 28 45 28 59 31 35 42 31 48 22 27
+## [6529] 33 42 36 25 38 26 27 53 41 53 30 NA NA 40 80 36 66 48 NA 45 34 33 26 18
+## [6553] 60 31 53 52 37 25 59 41 46 53 32 52 40 29 30 33 48 49 25 30 33 NA 38 41
+## [6577] NA NA 34 47 27 47 28 30 42 30 49 40 NA 40 NA 43 30 33</code></pre>
+<pre class="r"><code>class(dat$age)</code></pre>
+<pre><code>## [1] &quot;integer&quot;</code></pre>
+<pre class="r"><code>boxplot(dat$age~dat$race)</code></pre>
+<p><img src="Assignments_files/figure-html/unnamed-chunk-28-1.png" width="672" /></p>
+<p>The relationship between age and race show that white offenders seem to be older, while Black offenders are typically in a lower age category. It also appears that offenders older than 40 are more likely to be white or of unknown race. You can conclude from this relationship that older age is more frequent in white offenders and younger age is mor frequent in black offenders, with hispanics, native americans, and others closer in age generally to black offenders.</p>
+</div>
+<div id="extra-credit-10-points" class="section level3">
+<h3>Extra credit (10 points)</h3>
+<ol style="list-style-type: lower-alpha">
+<li>What does this code tell us? Answer: This code organizes the incidents by date and tells us the time difference among the incidents.</li>
+</ol>
+<pre class="r"><code>mydates &lt;- as.Date(dat$date)
+head(mydates)
+(mydates[length(mydates)] - mydates[1])</code></pre>
+<ol start="2" style="list-style-type: lower-alpha">
+<li><p>On Friday, a new report was published that was described as follows by The Guardian: “More than half of US police killings are mislabelled or not reported, study finds.” Without reading this article now (due to limited time), why do you think police killings might be mislabelled or underreported? Answer: Police killings might be mislabelled or underreported because it makes the gvoernment and police officers look bad. The police killings are attrocities and often envoke rioting and protests. The governemnt may see that it is in their best interest if these incidents are underreported to tamp down on backlash and avoid accountability.</p></li>
+<li><p>Regarding missing values in problem 4, do you see any? If so, do you think that’s all that’s missing from the data? Answer: There are some missing values in the variable age. I think it is likely that there is also more missing from the data.</p></li>
+</ol>
+</div>
 </div>
 
 
