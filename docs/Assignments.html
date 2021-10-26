@@ -1113,6 +1113,119 @@ head(mydates)
 </ol>
 </div>
 </div>
+<div id="assignment-3" class="section level1">
+<h1>Assignment 3</h1>
+<div id="problem-1-2" class="section level3">
+<h3>Problem 1</h3>
+<p>Load the data.</p>
+<pre class="r"><code>library(readr)
+library(knitr)
+dat.crime &lt;- read_delim(&quot;/Users/hannah/Documents/Crim 250/data/crime_simple.txt&quot;, delim = &quot;\t&quot;)</code></pre>
+<p>This is a dataset from a textbook by Brian S. Everitt about crime in the US in 1960. The data originate from the Uniform Crime Report of the FBI and other government sources. The data for 47 states of the USA are given.</p>
+<p>Here is the codebook:</p>
+<p>R: Crime rate: # of offenses reported to police per million population</p>
+<p>Age: The number of males of age 14-24 per 1000 population</p>
+<p>S: Indicator variable for Southern states (0 = No, 1 = Yes)</p>
+<p>Ed: Mean of years of schooling x 10 for persons of age 25 or older</p>
+<p>Ex0: 1960 per capita expenditure on police by state and local government</p>
+<p>Ex1: 1959 per capita expenditure on police by state and local government</p>
+<p>LF: Labor force participation rate per 1000 civilian urban males age 14-24</p>
+<p>M: The number of males per 1000 females</p>
+<p>N: State population size in hundred thousands</p>
+<p>NW: The number of non-whites per 1000 population</p>
+<p>U1: Unemployment rate of urban males per 1000 of age 14-24</p>
+<p>U2: Unemployment rate of urban males per 1000 of age 35-39</p>
+<p>W: Median value of transferable goods and assets or family income in tens of $</p>
+<p>X: The number of families per 1000 earning below 1/2 the median income</p>
+<p>We are interested in checking whether the reported crime rate (# of offenses reported to police per million population) and the average education (mean number of years of schooling for persons of age 25 or older) are related.</p>
+<ol style="list-style-type: decimal">
+<li>How many observations are there in the dataset? To what does each observation correspond?</li>
+</ol>
+<pre class="r"><code>dim(dat.crime)</code></pre>
+<pre><code>## [1] 47 14</code></pre>
+<p><strong>There are 47 observations in this data set that correspond to one of each of the 47 states included in the data set across the 14 variables measured.</strong></p>
+</div>
+<div id="problem-2-2" class="section level3">
+<h3>Problem 2</h3>
+<ol start="2" style="list-style-type: decimal">
+<li>Draw a scatter plot of the two variables. Calculate the correlation between the two variables. Can you come up with an explanation for this relationship?</li>
+</ol>
+<pre class="r"><code>plot(dat.crime$Ed, dat.crime$R,  main=&quot;Relationship between Average Education and Reported Crime Rate&quot;,
+    xlab=&quot;Average Education&quot;, ylab=&quot;Crime Rate&quot;)</code></pre>
+<p><img src="Assignments_files/figure-html/unnamed-chunk-32-1.png" width="576" /></p>
+<pre class="r"><code>cor(dat.crime$Ed, dat.crime$R)</code></pre>
+<pre><code>## [1] 0.3228349</code></pre>
+<p><strong>The variables are loosely positively correlated, but the correlation is not that strong, as illustrated by the scatter plot and the correlation coefficient value of 0.3228349 that is not close to 1. One explanation for this relationship is that states with larger urban centers, especially in terms of high-level job opportunities, tend to have people with higher levels of education working those jobs. These same urban places also tend to be characterized by higher crime rates. It is possible that the positive correlation between the average education and crime rate is a product of the large cities themselves.</strong></p>
+</div>
+<div id="problem-3-2" class="section level3">
+<h3>Problem 3</h3>
+<ol start="3" style="list-style-type: decimal">
+<li>Regress reported crime rate (y) on average education (x) and call this linear model <code>crime.lm</code> and write the summary of the regression by using this code, which makes it look a little nicer <code>{r, eval=FALSE} kable(summary(crime.lm)$coef, digits = 2)</code>.</li>
+</ol>
+<pre class="r"><code># Remember to remove eval=FALSE above!
+dat.crime$Ed = scale(dat.crime$Ed, center=TRUE, scale=FALSE) # scaling the data
+crime.lm &lt;- lm(formula = R ~ Ed, data = dat.crime) # running regression
+summary(crime.lm) # calling the summary of the fitted model</code></pre>
+<pre><code>## 
+## Call:
+## lm(formula = R ~ Ed, data = dat.crime)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -60.061 -27.125  -4.654  17.133  91.646 
+## 
+## Coefficients:
+##             Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)  90.5085     5.3984  16.766   &lt;2e-16 ***
+## Ed            1.1161     0.4878   2.288   0.0269 *  
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 37.01 on 45 degrees of freedom
+## Multiple R-squared:  0.1042, Adjusted R-squared:  0.08432 
+## F-statistic: 5.236 on 1 and 45 DF,  p-value: 0.02688</code></pre>
+</div>
+<div id="problem-4-2" class="section level3">
+<h3>Problem 4</h3>
+<ol start="4" style="list-style-type: decimal">
+<li>Are the four assumptions of linear regression satisfied? To answer this, draw the relevant plots. (Write a maximum of one sentence per assumption.)</li>
+</ol>
+<pre class="r"><code>plot(crime.lm, which=1)</code></pre>
+<p><img src="Assignments_files/figure-html/unnamed-chunk-35-1.png" width="672" /> Testing linearity assumption.</p>
+<pre class="r"><code>plot(dat.crime$Ed, crime.lm$residuals, ylim=c(-15,15), main=&quot;Residuals vs. x&quot;, xlab=&quot;x, Average Education&quot;, ylab=&quot;Residuals&quot;)
+abline(h = 0, lty=&quot;dashed&quot;)</code></pre>
+<p><img src="Assignments_files/figure-html/unnamed-chunk-36-1.png" width="672" /> Testing linearity and Independence assumption above.</p>
+<pre class="r"><code>plot(crime.lm, which=3)</code></pre>
+<p><img src="Assignments_files/figure-html/unnamed-chunk-37-1.png" width="672" /> Testing variance assumption/homoscedascisity above.</p>
+<pre class="r"><code>plot(crime.lm, which=5)</code></pre>
+<p><img src="Assignments_files/figure-html/unnamed-chunk-38-1.png" width="672" /></p>
+<pre class="r"><code>plot(crime.lm, which=2)</code></pre>
+<p><img src="Assignments_files/figure-html/unnamed-chunk-39-1.png" width="672" /></p>
+<p>Testing Normal Population Assumption above.</p>
+<p><strong>Linearity Assumption:The data passes this assumption because the line in the Residuals vs. Fitted plot is mostly flat and the data distribution shows no pattern that would suggest a non-linear relationship. Independence Assumption:The data passes this assumption because the Residuals vs. X plot shows a pretty well spread out distribution with no noticeable, distinct pattern. Variance Assumption:The data passes this assumption because the line in the Scale-location plot is relatively straight, and there are about the same number of data points on either side of the line, which suggests the errors have constant variance. Normal Population Assumption: This assumption is not met because the data points in the top right of the normal Q-Q plot don’t represent a normal distribution, and we know that these data points are not outliers based on their location within Cook’s distance in the Residuals vs. leverage plot. </strong></p>
+</div>
+<div id="problem-5-2" class="section level3">
+<h3>Problem 5</h3>
+<ol start="5" style="list-style-type: decimal">
+<li>Is the relationship between reported crime and average education statistically significant? Report the estimated coefficient of the slope, the standard error, and the p-value. What does it mean for the relationship to be statistically significant?</li>
+</ol>
+<p><strong>The relationship between reported crime and average education is statistically significant based on the following values. The estimated coefficient of the slope is 1.1161. The standard error is 0.4878. The p-value is 0.02688. When a relationship is statistically significant, it means that the two variables are likely related, meaning we can reject the null hypothesis.</strong></p>
+</div>
+<div id="problem-6-2" class="section level3">
+<h3>Problem 6</h3>
+<ol start="6" style="list-style-type: decimal">
+<li>How are reported crime and average education related? In other words, for every unit increase in average education, how does reported crime rate change (per million) per state?</li>
+</ol>
+<p><strong>For every unit increase in average education, reported crime per million per state is predicted to increase by 1.1161 offenses. </strong></p>
+</div>
+<div id="problem-7-1" class="section level3">
+<h3>Problem 7</h3>
+<ol start="7" style="list-style-type: decimal">
+<li>Can you conclude that if individuals were to receive more education, then crime will be reported more often? Why or why not?</li>
+</ol>
+<p><strong>You cannot conclude that if individuals were to receive more education, then crime will be reported more often because there is not evidence of a causal relationship here. Correlation does not equal causation. Just because the events are associated with one another does not mean that one causes the other. It is possible in this case that there is a third, unseen variable that causes both of these trends. Also, states are being measured here not individuals, so it would be difficult to make a prediction about individuals based on this model.</strong></p>
+</div>
+</div>
 
 
 
