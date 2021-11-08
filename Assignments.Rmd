@@ -574,4 +574,684 @@ __For every unit increase in average education, reported crime per million per s
 
 __You cannot conclude that if individuals were to receive more education, then crime will be reported more often because there is not evidence of a causal relationship here. Correlation does not equal causation. Just because the events are associated with one another does not mean that one causes the other. It is possible in this case that there is a third, unseen variable that causes both of these trends. Also, states are being measured here not individuals, so it would be difficult to make a prediction about individuals based on this model.__
 
+# Exam 2
+### Instructions
+
+a. Create a folder in your computer (a good place would be under Crim 250, Exams). 
+
+b. Download the dataset from the Canvas website (sim.data.csv) onto that folder, and save your Exam 2.Rmd file in the same folder.
+
+c. Data description: This dataset provides (simulated) data about 200 police departments in one year. It contains information about the funding received by the department as well as incidents of police brutality. Suppose this dataset (sim.data.csv) was collected by researchers to answer this question: **"Does having more funding in a police department lead to fewer incidents of police brutality?"**
+d. Codebook:
+- funds: How much funding the police department received in that year in millions of dollars.
+- po.brut: How many incidents of police brutality were reported by the department that year.
+- po.dept.code: Police department code
+
+### Problem 1: EDA (10 points) 
+
+Describe the dataset and variables. Perform exploratory data analysis for the two variables of interest: funds and po.brut.
+
+```{r}
+dat<- read.csv (file ='/Users/hannah/Documents/Crim 250/Test Github/Hannah-R/data/sim.data copy.csv')
+```
+
+```{r}
+plot(dat$funds, dat$po.brut, main = "Funding Versus Police Brutality", xlab = "Funding Milllions of Dollars", ylab = "Incidents of Reported Police Brutality")
+```
+__The data set contains 200 observations of 3 different variables.The variables are police department code, funds and police brutality. Police department code is a qualitative variable, as it just tells you what police department the information is about. Police brutality is a quantitative variable because it has units and can be evaluated for mean, median, and mode etc. Funds is also a quantitative variable for the same reason. I chose to do a scatter plot above because funding and number of reported police brutality are both quantitative variables. This scatter plot seems to suggest a strong negative correlation between funding and police brutality, meaning that as funding increases brutality seems to decrease; however, there is no way to know conclusively based solely on this scatter plot. __
+
+
+### Problem 2: Linear regression (30 points)
+
+a. Perform a simple linear regression to answer the question of interest. To do this, name your linear model "reg.output" and write the summary of the regression by using "summary(reg.output)". 
+
+```{r}
+# Remember to remove eval=FALSE!!
+dat$funds = scale(dat$funds, center=TRUE, scale=FALSE) 
+reg.output <- lm(formula = po.brut ~ funds, data = dat)
+summary(reg.output)
+```
+
+
+b. Report the estimated coefficient, standard error, and p-value of the slope. Is the relationship between funds and incidents statistically significant? Explain.
+
+__The estimated coefficient is -.367099. The standard error is 0.004496. The p-value of the slope is 2.2e-16. These numbers indicate that the relationship between funds and police brutality are statistically significant because the p-value is much less 0.05.__
+
+c. Draw a scatterplot of po.brut (y-axis) and funds (x-axis). Right below your plot command, use abline to draw the fitted regression line, like this:
+```{r, fig.width=4, fig.height=4, eval=FALSE}
+# Remember to remove eval=FALSE!!
+plot(dat$funds, dat$po.brut, main = "Funding Versus Police Brutality", xlab = "Funding Milllions of Dollars", ylab = "Incidents of Reported Police Brutality")
+abline(reg.output, col = "red", lwd=2)
+```
+Does the line look like a good fit? Why or why not?
+
+__This line looks like a fairly good fit because many of the data points fall on or near the line. There also are not any distinct and recognizable patterns of extreme variation from the line. The line follows the general pattern of the actual data, which is a good indicator that it is a good fit at this stage.__
+
+d. Are the four assumptions of linear regression satisfied? To answer this, draw the relevant plots. (Write a maximum of one sentence per assumption.) If not, what might you try to do to improve this (if you had more time)?
+
+```{r}
+#testing the linearity assumption (residuals vs. fitted)
+plot(reg.output, which = 1)
+
+```
+
+```{r}
+#testing the linearity and independence assumptions (residuals vs. x) 
+plot(dat$funds, reg.output$residuals, ylim = c(-15,15), main = "Residuals vs. X", xlab = "X, Funds", ylab = "Residuals")
+abline(h = 0, lty = "dashed")
+```
+
+```{r}
+#Testing the equal variance assumption (scale location plot)
+plot(reg.output, which=3)
+```
+
+```{r}
+#Testing normal population assumption (residuals vs. leverage)
+plot(reg.output, which=5)
+```
+
+```{r}
+#Testing normal population assumption (normal qq)
+plot(reg.output, which=2)
+```
+__The linearity assumption is not met because the line that fits the data is a curve, which suggests that the data may have a nonlinear relationship. The independence assumption does not appear to be met because there is a very distinct pattern in the data as much of it is concentrated in the curved middle section between -20 and 20. The equal variance assumption is also not met because the fit line is not very close to flat, which suggests that the errors have non-constant variance. The normal population assumption is not met because the normal Q-Q plot appears to have a left skew, meaning the residuals are not likely normally distributed.__
+
+e. Answer the question of interest based on your analysis.
+
+__With only the linear regression model, it is impossible to formulate a good answer to whether more funding in a police department will lead to fewer incidents of police brutality. Since none of the assumptions are satisfied, a linear model is not a good fit and will not make good predictions for this data. It may be possible to make better predictions if we do further analysis by transforming the data in some way. __
+
+### Problem 3: Data ethics (10 points)
+
+Describe the dataset. Considering our lecture on data ethics, what concerns do you have about the dataset? Once you perform your analysis to answer the question of interest using this dataset, what concerns might you have about the results?
+
+__The data set has data for 200 police departments in one year. In order to answer the question of interest, more analysis has to be done because the linear regression model is insufficient to make a prediction in this case. In terms of data ethics, it is concerning that police departments have control over what gets reported. For instance, they could under report the incidences of police brutality in order to make themselves look better. This means that the data may not be truly representative of this situation. Models can often reinforce biases if the models are based on biased data. This could be an issue in this case because the police have control over how many instances of brutality get reported.The results could be reflecting lower levels of brutality than are actually present, which affects our interpretation of the relationship between funding and brutality. __
+
+# Assignment 4
+
+###Chapter 3: Data Visualization 
+```{r}
+#install.packages("tidyverse")
+library(tidyverse)
+
+#these two lines downlaoded and installed the tidyverse package that is necessary for the following lines of code to work. 
+```
+
+```{r}
+mpg
+#This line of code shows the mpg data frame in ggplot2.
+```
+
+```{r}
+ggplot(data = mpg) + 
+  geom_point(mapping = aes(x = displ, y = hwy))
+#The first line says that we want to use the mpg data frame in ggplot.
+#The second line creates the mapping plot below by adding a layer of points to the graph with car's engine size on the x-axis and car's fuel efficiency on the y-axis.
+
+#ggplot(data = <DATA>) + 
+# <GEOM_FUNCTION>(mapping = aes(<MAPPINGS>)) THIS IS A TEMPLATE FOR MAKING OTHER GRAPHS IN GGPLOT 
+```
+
+```{r}
+ggplot(data = mpg) + 
+  geom_point(mapping = aes(x = displ, y = hwy, color = class))
+#The first line of code is the same as before: it sets up that we're going to make a graph in ggplot using the mpg data frame.
+#The second line includes the layer of points and adds a third variable of class to plot by using color as an aesthetic. The car classes are differentiated by color. This adds another level to the graph, which is known as scaling.It also creates a legend to explain the mapping.  
+```
+
+```{r}
+ggplot(data = mpg) + 
+  geom_point(mapping = aes(x = displ, y = hwy, size = class))
+#This code does a very similar as above, but instead uses size of the points as a level to distinguish the third variable. It also creates a legend to explain the mapping. 
+```
+
+```{r}
+ggplot(data = mpg) + 
+  geom_point(mapping = aes(x = displ, y = hwy, alpha = class))
+#Very similar as the previous codes, but this maps class to the alpha aesthetic, which distinguishes the variable by transparency.This adds another layer to the plot. It also creates a legend to explain the mapping. 
+
+ggplot(data = mpg) + 
+  geom_point(mapping = aes(x = displ, y = hwy, shape = class))
+#This code is similar again but maps class to the shape aesthetic, which distinguishes the class variable by point shape.This adds another layer to the plot.It also creates a legend to explain the mapping.  
+```
+
+```{r}
+ggplot(data = mpg) + 
+  geom_point(mapping = aes(x = displ, y = hwy), color = "blue")
+#This adds an aesthetic to the plot manually. The color="blue" turns all the points blue. It just adds to the appearance of the graph, but it does not convey any additional information about the variable.
+```
+
+```{r}
+#ggplot(data = mpg) 
+#+ geom_point(mapping = aes(x = displ, y = hwy))
+#This graphing code from before is not working because the + is at the beginning of the second line. It has to be the at the end of the first line in order to work. 
+```
+
+```{r}
+ggplot(data = mpg) + 
+  geom_point(mapping = aes(x = displ, y = hwy)) + 
+  facet_wrap(~ class, nrow = 2)
+#This sets up the same plot we have been using, but the third row adds a level to the graph called facets. Facets are subplots that display subsets of the data separately. Now, differences in the class variable are set apart by subplots as opposed to the aesthetic levels we were adding previously.Also, nrow=2 creates 2 rows and 2 columns. 
+```
+
+```{r}
+ggplot(data = mpg) + 
+  geom_point(mapping = aes(x = displ, y = hwy)) + 
+  facet_grid(drv ~ cyl)
+#This does something similar as above, but there is an important difference. The code facet_grid contains 2 variables and facets the plot as a combination of the 2. Also, there is no setting of rows and columns here.  
+```
+
+```{r}
+ggplot(data = mpg) + 
+  geom_point(mapping = aes(x = displ, y = hwy))
+#The first line says we're using ggplot and the mpg data frame. The second line establishes that we're going to use points as our geometrical object to represent our data. 
+
+ggplot(data = mpg) + 
+  geom_smooth(mapping = aes(x = displ, y = hwy))
+#The second line in this code sets smooth as our geom for the plot, which represents data in a line. 
+```
+```{r}
+ggplot(data = mpg) + 
+  geom_smooth(mapping = aes(x = displ, y = hwy, linetype = drv))
+#The addition of the third line here adds an aesthetic that sets a line type distinction. This distinction separates the data by the third variable drv. Drv classifications are now clear in this geom. 
+```
+
+```{r}
+ggplot(data = mpg) +
+  geom_smooth(mapping = aes(x = displ, y = hwy))
+              
+ggplot(data = mpg) +
+  geom_smooth(mapping = aes(x = displ, y = hwy, group = drv))
+    
+ggplot(data = mpg) +
+  geom_smooth(
+    mapping = aes(x = displ, y = hwy, color = drv),
+    show.legend = FALSE
+  )
+#This code shows 3 different variations of the geom_smooth function. The first has all the data in one line and displ on the x-axis and hwy on the y-axis. The second plot adds the drv variable, which creates 3 different lines by category in that variable. The third plot adds the aesthetic of color to the drv variable to add further distinction. 
+```
+
+```{r}
+ggplot(data = mpg) + 
+  geom_point(mapping = aes(x = displ, y = hwy)) +
+  geom_smooth(mapping = aes(x = displ, y = hwy))
+#This code integrates multiple goems of the same data into one plot. The second line creates the point geom, and the third line creates the smooth geom. Their location under the original ggplot code and the + signs allow the two geoms to occupy one plot together. 
+```
+
+```{r}
+ggplot(data = mpg, mapping = aes(x = displ, y = hwy)) + 
+  geom_point() + 
+  geom_smooth()
+#This code makes the same plot as above, but the variables are determined in the first line rather than the subsequent two. This makes it easier to change the x and y-axes if we want a different display because the variables are in one location of the code as opposed to two. 
+```
+
+```{r}
+ggplot(data = mpg, mapping = aes(x = displ, y = hwy)) + 
+  geom_point(mapping = aes(color = class)) + 
+  geom_smooth()
+#This code creates a similar plot as above, but in the second line it adds color as an aesthetic to the point layer of the display.
+```
+
+```{r}
+ggplot(data = mpg, mapping = aes(x = displ, y = hwy)) + 
+  geom_point(mapping = aes(color = class)) + 
+  geom_smooth(data = filter(mpg, class == "subcompact"), se = FALSE)
+#This code creates a very similar plot but the third line turns the geom_smooth plot into only a representation of the "subcompact" subset of the data. 
+```
+
+```{r}
+ggplot(data = diamonds) + 
+  geom_bar(mapping = aes(x = cut))
+#The first line identifies diamonds as the data set we are using. The second line creates a bar plot with cut variable on the x-axis and count on the y-axis. 
+```
+
+```{r}
+ggplot(data = diamonds) + 
+  stat_count(mapping = aes(x = cut))
+#This code creates the same plot as above, because the geom_bar and stat_count code functions are interchangeable. 
+```
+
+```{r}
+demo <- tribble(
+  ~cut,         ~freq,
+  "Fair",       1610,
+  "Good",       4906,
+  "Very Good",  12082,
+  "Premium",    13791,
+  "Ideal",      21551
+)
+
+ggplot(data = demo) +
+  geom_bar(mapping = aes(x = cut, y = freq), stat = "identity")
+#The final line of code changes the geom_bar default stat from count to identity. This maps the height of the bars to raw y variable values.
+```
+
+```{r}
+ggplot(data = diamonds) + 
+  geom_bar(mapping = aes(x = cut, y = stat(prop), group = 1))
+#This code creates a bar chart of proportion as opposed to count. 
+```
+
+```{r}
+ggplot(data = diamonds) + 
+  stat_summary(
+    mapping = aes(x = cut, y = depth),
+    fun.min = min,
+    fun.max = max,
+    fun = median
+  )
+#This code creates a visual summary of the data with variables cut and depth. It summarizes the depth values for each unique cut value. 
+```
+
+```{r}
+ggplot(data = diamonds) + 
+  geom_bar(mapping = aes(x = cut, colour = cut))
+ggplot(data = diamonds) + 
+  geom_bar(mapping = aes(x = cut, fill = cut))
+#This code takes the original bar chat of cut and count of the diamond data set and adds color to the bars that differ based on x-value designation. The colour function in the second line of code makes colored borders of the bars. The fill function colors each bar fully. 
+```
+
+```{r}
+ggplot(data = diamonds) + 
+  geom_bar(mapping = aes(x = cut, fill = clarity))
+#This code maps the fill aesthetic to another variable, clarity. Now the colors are stacked withing the cut bars and refer to levels of clarity. 
+```
+
+```{r}
+ggplot(data = diamonds, mapping = aes(x = cut, fill = clarity)) + 
+  geom_bar(alpha = 1/5, position = "identity")
+ggplot(data = diamonds, mapping = aes(x = cut, colour = clarity)) + 
+  geom_bar(fill = NA, position = "identity")
+#The first line of the code makes the the bar plot with the cut variable on the axis and the clarity variable as the color fill. The next line places each object precisely where it falls in the graph, which necessitates making the bars slightly transparent. This is accomplished by setting alpha to a small value. The following line creates a plot of the same variables, but uses colour instead of fill. The final line makes the bars completely transparent by making fill=NA    
+```
+
+```{r}
+ggplot(data = diamonds) + 
+  geom_bar(mapping = aes(x = cut, fill = clarity), position = "fill")
+#This is another similar plot but the position is set to "fill," which makes all of the bars the same height. With same height bars, it becomes easier to compare the color difference across x-variable groups. 
+```
+
+```{r}
+ggplot(data = diamonds) + 
+  geom_bar(mapping = aes(x = cut, fill = clarity), position = "dodge")
+#Instead of stacking the overlapping objects, setting the position to "dodge" displays them side-by-side, which also helps make comparison easier. 
+```
+
+```{r}
+ggplot(data = mpg) + 
+  geom_point(mapping = aes(x = displ, y = hwy), position = "jitter")
+#The first line established mpg as our data set. The second line creates a scatter plot with displ on the x-axis and hwy on the y-axis. Setting the position to "jitter" in the third line avoids the issue over plotting by adding a little randomness to each point.  
+```
+
+```{r}
+ggplot(data = mpg, mapping = aes(x = class, y = hwy)) + 
+  geom_boxplot()
+ggplot(data = mpg, mapping = aes(x = class, y = hwy)) + 
+  geom_boxplot() +
+  coord_flip()
+#This code creates a boxplot with class on the x-axis and hwy on the y-axis. It then creates this plot again and uses coord_flip to flip the x and y axes. 
+```
+
+```{r}
+nz <- map_data("nz")
+
+ggplot(nz, aes(long, lat, group = group)) +
+  geom_polygon(fill = "white", colour = "black")
+
+ggplot(nz, aes(long, lat, group = group)) +
+  geom_polygon(fill = "white", colour = "black") +
+  coord_quickmap()
+#This code creates a map of New Zealand. The fourth and fifth lines then create the same map and add to it in line 6. It uses coord_quickmap to correctly set the aspect ratio, so it does not appear distorted.
+```
+
+```{r}
+bar <- ggplot(data = diamonds) + 
+  geom_bar(
+    mapping = aes(x = cut, fill = cut), 
+    show.legend = FALSE,
+    width = 1
+  ) + 
+  theme(aspect.ratio = 1) +
+  labs(x = NULL, y = NULL)
+
+bar + coord_flip()
+bar + coord_polar()
+#The first part of this code creates a colored bar plot of the diamonds data set with cut on the x-axis and the fill criteria. It then flips the x and y-axes and uses polar coordinates (in the last two lines of the code), which allows comparisons to be drawn betweem the bar chart and the Coxcomb chart. 
+```
+
+```{r}
+#ggplot(data = <DATA>) + 
+#  <GEOM_FUNCTION>(
+#     mapping = aes(<MAPPINGS>),
+#     stat = <STAT>, 
+#     position = <POSITION>
+#  ) +
+#  <COORDINATE_FUNCTION> +
+#  <FACET_FUNCTION>
+#This is a template that contains all 7 of the ggplot2 parameters covered above. 
+```
+
+###Chapter 28: Graphics for Communication 
+```{r}
+#install.packages("ggrepel")
+#install.packages("viridis")
+library(ggrepel)
+library(viridis)
+#These 4 lines of code install and download the ggrepel and viridis codes to be used below. 
+```
+
+```{r}
+ggplot(mpg, aes(displ, hwy)) +
+  geom_point(aes(color = class)) +
+  geom_smooth(se = FALSE) +
+  labs(title = "Fuel efficiency generally decreases with engine size")
+#This code creates a point geom plot and a line geom plot for the variables displ and hwy. The point plot also includes colors based on the variable class. The labs function allows the addition of a plot title. 
+```
+
+```{r}
+ggplot(mpg, aes(displ, hwy)) +
+  geom_point(aes(color = class)) +
+  geom_smooth(se = FALSE) +
+  labs(
+    title = "Fuel efficiency generally decreases with engine size",
+    subtitle = "Two seaters (sports cars) are an exception because of their light weight",
+    caption = "Data from fueleconomy.gov"
+  )
+#This code creates the same plot as above but adds both a subtitle and a caption in addition to the plot title. 
+```
+
+```{r}
+ggplot(mpg, aes(displ, hwy)) +
+  geom_point(aes(colour = class)) +
+  geom_smooth(se = FALSE) +
+  labs(
+    x = "Engine displacement (L)",
+    y = "Highway fuel economy (mpg)",
+    colour = "Car type"
+  )
+#This creates the same plot again but uses labs to to assign axis titles and the color legend. 
+```
+
+```{r}
+df <- tibble(
+  x = runif(10),
+  y = runif(10)
+)
+ggplot(df, aes(x, y)) +
+  geom_point() +
+  labs(
+    x = quote(sum(x[i] ^ 2, i == 1, n)),
+    y = quote(alpha + beta + frac(delta, theta))
+  )
+#This code allows you to put a mathematical equation as the axis label as opposed to string of text. 
+```
+
+```{r}
+best_in_class <- mpg %>%
+  group_by(class) %>%
+  filter(row_number(desc(hwy)) == 1)
+
+ggplot(mpg, aes(displ, hwy)) +
+  geom_point(aes(colour = class)) +
+  geom_text(aes(label = model), data = best_in_class)
+#This code creates a geom point plot and adds annotations to the plot. 
+```
+
+```{r}
+ggplot(mpg, aes(displ, hwy)) +
+  geom_point(aes(colour = class)) +
+  geom_label(aes(label = model), data = best_in_class, nudge_y = 2, alpha = 0.5)
+#This code creates a similar plot, but the addition of the geom_label code puts a rectangle behind the text, which makes it easier to read. Also, nudge_y moves the labels slightly above the points they refer to. 
+```
+
+```{r}
+ggplot(mpg, aes(displ, hwy)) +
+  geom_point(aes(colour = class)) +
+  geom_point(size = 3, shape = 1, data = best_in_class) +
+  ggrepel::geom_label_repel(aes(label = model), data = best_in_class)
+#This code adds a second layer of labels and large hollow points that makes the annotations even more clear. 
+```
+
+```{r}
+class_avg <- mpg %>%
+  group_by(class) %>%
+  summarise(
+    displ = median(displ),
+    hwy = median(hwy)
+  )
+#> `summarise()` ungrouping output (override with `.groups` argument)
+
+ggplot(mpg, aes(displ, hwy, colour = class)) +
+  ggrepel::geom_label_repel(aes(label = class),
+    data = class_avg,
+    size = 6,
+    label.size = 0,
+    segment.color = NA
+  ) +
+  geom_point() +
+  theme(legend.position = "none")
+#This code replaces the color legend with labels directly on the plot. The last line removes the traditional legend. 
+```
+
+```{r}
+label <- mpg %>%
+  summarise(
+    displ = max(displ),
+    hwy = max(hwy),
+    label = "Increasing engine size is \nrelated to decreasing fuel economy."
+  )
+
+ggplot(mpg, aes(displ, hwy)) +
+  geom_point() +
+  geom_text(aes(label = label), data = label, vjust = "top", hjust = "right")
+#This code creates geom point plot with one single label on the plot. It also uses a specific data frame by using the summarise function. 
+```
+
+```{r}
+label <- tibble(
+  displ = Inf,
+  hwy = Inf,
+  label = "Increasing engine size is \nrelated to decreasing fuel economy."
+)
+
+ggplot(mpg, aes(displ, hwy)) +
+  geom_point() +
+  geom_text(aes(label = label), data = label, vjust = "top", hjust = "right")
+#This code creates a very similar plot as above but moves the label to the border of the plot using the vjust and hjust codes. 
+```
+
+```{r}
+"Increasing engine size is related to decreasing fuel economy." %>%
+  stringr::str_wrap(width = 40) %>%
+  writeLines()
+#> Increasing engine size is related to
+#> decreasing fuel economy.
+#This code creates the same plot but uses the more succinct command stringr::str_wrap, which automatically adds line breaks by giving a space to designate characters per line. 
+```
+
+```{r}
+ggplot(mpg, aes(displ, hwy)) +
+  geom_point(aes(colour = class))
+#This code creates a geom point plot for the displ and hwy variables of the mpg data set. The colour function applies the class variable in the form of coloring the dots differently. 
+```
+
+```{r}
+ggplot(mpg, aes(displ, hwy)) +
+  geom_point(aes(colour = class)) +
+  scale_x_continuous() +
+  scale_y_continuous() +
+  scale_colour_discrete()
+#This code creates the same plot as above but adds scale parameters. 
+```
+
+
+```{r}
+ggplot(mpg, aes(displ, hwy)) +
+  geom_point() +
+  scale_y_continuous(breaks = seq(15, 40, by = 5))
+#This code creates a point geom plot for the displ and hwy variable of the mpg data set. It then sets the scale axes and uses the breaks function to place the ticks at certain values. This makes the x-axis range from 15 to 40 with ticks at every 5th value. 
+```
+
+```{r}
+ggplot(mpg, aes(displ, hwy)) +
+  geom_point() +
+  scale_x_continuous(labels = NULL) +
+  scale_y_continuous(labels = NULL)
+#This code create a similar plot with the same data and variables but removes the values from the axes by setting their scales to null. 
+```
+
+```{r}
+presidential %>%
+  mutate(id = 33 + row_number()) %>%
+  ggplot(aes(start, id)) +
+    geom_point() +
+    geom_segment(aes(xend = end, yend = id)) +
+    scale_x_date(NULL, breaks = presidential$start, date_labels = "'%y")
+#This plot shows what year each US president started and ended their terms. This means that each president on the y-axis will correspond to more than one of the years on the x-axis. Thus uses the breaks function to show exactly where the observations occur.  
+```
+
+```{r}
+base <- ggplot(mpg, aes(displ, hwy)) +
+  geom_point(aes(colour = class))
+
+base + theme(legend.position = "left")
+base + theme(legend.position = "top")
+base + theme(legend.position = "bottom")
+base + theme(legend.position = "right") # the default
+#This code creates 4 different versions of the same geom point plot using the displ and hwy variables of the mpg data set. It also uses color to distinguish the class variable. Each of the different versions of this plot uses the legend.position function to control where on the plot the legend is drawn. This is a theme() setting. 
+```
+
+```{r}
+ggplot(mpg, aes(displ, hwy)) +
+  geom_point(aes(colour = class)) +
+  geom_smooth(se = FALSE) +
+  theme(legend.position = "bottom") +
+  guides(colour = guide_legend(nrow = 1, override.aes = list(size = 4)))
+#> `geom_smooth()` using method = 'loess' and formula 'y ~ x'
+#This code plots the same variables as before, using both a point geom and a smooth geom with color representing the class variable. The code also puts the legend at the bottom. Nrow sets the number of rows for the legend (in this case 1) and override.aes makes the points of the legend bigger. 
+```
+
+```{r}
+ggplot(diamonds, aes(carat, price)) +
+  geom_bin2d()
+
+ggplot(diamonds, aes(log10(carat), log10(price))) +
+  geom_bin2d()
+#This code makes two plots of carat and price from the diamonds data set. The first uses a regular scale, while the second uses a log10 scale to make the relationship between the variable counts more obvious. 
+```
+
+```{r}
+ggplot(diamonds, aes(carat, price)) +
+  geom_bin2d() + 
+  scale_x_log10() + 
+  scale_y_log10()
+#This code creates a similar plot, but the scale of the axes is changed through a scale function and not an aesthetic function, which ensures that the axes are labelled on the orginal scale. 
+```
+
+```{r}
+ggplot(mpg, aes(displ, hwy)) +
+  geom_point(aes(color = drv))
+
+ggplot(mpg, aes(displ, hwy)) +
+  geom_point(aes(color = drv)) +
+  scale_colour_brewer(palette = "Set1")
+#This code creates 2 versions of the same scatter plot but the second sets a specific color palette, while the first just employs the default. 
+```
+
+```{r}
+ggplot(mpg, aes(displ, hwy)) +
+  geom_point(aes(color = drv, shape = drv)) +
+  scale_colour_brewer(palette = "Set1")
+#This code creates a scatter plot of the same data, but it adds shape as an aesthetic to further distinguish which group of the drv variable the points belong to. 
+```
+
+```{r}
+presidential %>%
+  mutate(id = 33 + row_number()) %>%
+  ggplot(aes(start, id, colour = party)) +
+    geom_point() +
+    geom_segment(aes(xend = end, yend = id)) +
+    scale_colour_manual(values = c(Republican = "red", Democratic = "blue"))
+#This code creates the same presidential plot from before but it adds party as a third variable to categorize the data. The scale_colour_manual allows for the colors to be included and put into the legend. 
+```
+
+```{r}
+df <- tibble(
+  x = rnorm(10000),
+  y = rnorm(10000)
+)
+ggplot(df, aes(x, y)) +
+  geom_hex() +
+  coord_fixed()
+
+ggplot(df, aes(x, y)) +
+  geom_hex() +
+  viridis::scale_fill_viridis() +
+  coord_fixed()
+#This code creates 2 versions of the same hex plot. The first one  allows the colors to be default. The second plot, however, uses the viridis package to apply a specific color scheme. This is accomplished by viridis::scale_fill_viridis/
+```
+
+```{r}
+ggplot(mpg, mapping = aes(displ, hwy)) +
+  geom_point(aes(color = class)) +
+  geom_smooth() +
+  coord_cartesian(xlim = c(5, 7), ylim = c(10, 30))
+
+mpg %>%
+  filter(displ >= 5, displ <= 7, hwy >= 10, hwy <= 30) %>%
+  ggplot(aes(displ, hwy)) +
+  geom_point(aes(color = class)) +
+  geom_smooth()
+#This code creates 2 plots that contain both points and smooth lines of the displ, hwy, and class variable of the mpg data set. The coord-cartesian line of code zooms in on a specific region of the plot.  
+```
+
+```{r}
+suv <- mpg %>% filter(class == "suv")
+compact <- mpg %>% filter(class == "compact")
+
+ggplot(suv, aes(displ, hwy, colour = drv)) +
+  geom_point()
+
+ggplot(compact, aes(displ, hwy, colour = drv)) +
+  geom_point()
+#This code creates 2 plots with displ, hwy, and drv. One of the them plots the suv class of cars and one of them plots the compact class of cars. This makes them difficult to compare because the scales have different ranges. 
+```
+
+```{r}
+x_scale <- scale_x_continuous(limits = range(mpg$displ))
+y_scale <- scale_y_continuous(limits = range(mpg$hwy))
+col_scale <- scale_colour_discrete(limits = unique(mpg$drv))
+
+ggplot(suv, aes(displ, hwy, colour = drv)) +
+  geom_point() +
+  x_scale +
+  y_scale +
+  col_scale
+
+ggplot(compact, aes(displ, hwy, colour = drv)) +
+  geom_point() +
+  x_scale +
+  y_scale +
+  col_scale
+#This code improves upon the previous plots by using the limits function to share the scales across both plots. These plots contain the same information as above, but the standardization of the scale makes them easier to compare. 
+```
+
+```{r}
+ggplot(mpg, aes(displ, hwy)) +
+  geom_point(aes(color = class)) +
+  geom_smooth(se = FALSE) +
+  theme_bw()
+#This code creates a point and smooth line plot of the displ, hwy, and class variables of the mpg data set. It uses theme_bw to create a white background with grid lines. 
+```
+
+```{r}
+ggplot(mpg, aes(displ, hwy)) + geom_point()
+#This code creates a scatter plot of displ and hwy with no added color. 
+```
+
+```{r}
+ggsave("my-plot.pdf")
+#> Saving 7 x 4.33 in image
+#This code saves an image of the above plot. 
+```
 
