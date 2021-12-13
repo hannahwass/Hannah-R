@@ -1255,3 +1255,251 @@ ggsave("my-plot.pdf")
 #This code saves an image of the above plot. 
 ```
 
+# Final Project
+
+
+## Marijuana Possession Charges
+### An exploratory look at the relationship between race and sentencing outcomes
+
+#### INTRODUCTION
+Following Nixon's call for the War on Drugs in June 1971, there was a push for mandatory sentencing in drug-related crimes, effectively expanding the role of the federal government in drug-related arrests and sentencing (Drug Policy Alliance, 2021). Recently, there has been an uptick of discussion in the political world and in pop culture of the United States on the War on Drugs, namely regarding the adjustment of the severity of sentencing and its disproportionate effect on minority communities. These racial disparities are particularly discussed in regards to marijuana-related charges, as Black Americans have been found to be four times more likely to be arrested for marijuana charges than White Americans and six times more likely to be incarcerated for drug-related charges (Rahamatulla, 2017). Many agree that a solution to the disproportionate effects of drug-related charges needs to be created, and through the work discussed in this paper, we hope to focus our attention on sentencing outcomes and race for marijuana charges to further understand where disparities lie. Due to the increasing prevalence and history of drug-related sentencing, we wanted to examine the relationships in drug-related sentencing between race and sentencing likelihood, especially focusing on marijuana. We expect, from past studies examined in and outside of this course, that the rate of prison sentencing for Black people would be higher than the rate of prison sentencing of white people. These motivations lead to the research question: Are Black people sentenced federally to prison for marijuana at a higher rate than white people?
+
+#### DESCRIPTION OF THE DATA USED
+The data set we utilized for this review is a record of federal criminal sentences as provided by the US Sentencing Committee (United States Sentencing Commission, 2007). This data set includes information on federal cases sentenced under the guidelines of the Sentencing Reform Act of 1984. Because of the research question prompting this paper, we chose to look at only cases where the defendant was charged with possession of marijuana. We used the “Drug Type 1” variable in the dataset to create a subset with these cases, as this variable indicated that marijuana was the highest penalty incurring drug the defendant was found with. Because we wanted to look at the relationship between race and being sentenced to prison, our independent variable was the defendant’s race (either Black or white cases) and our dependent variable was the type of sentence (either prison or no prison). We extrapolated specifically Black and white instantiations in the race variable so as to control for the number of independent variables being observed. We also decided to control for the defendant’s age, the defendant’s gender, and whether or not the defendant has a criminal record. We thought that these three variables would be the most influential in determining sentence type, both as legal (criminal record) and extralegal (age and gender) variables.
+
+```{r, echo=FALSE}
+#Reading in our dataset from the federal sentencing 
+library(readr)
+library(knitr)
+originaldata <- read.table("/Users/hannah/Documents/Crim 250/data/dat.tsv", sep = '\t', header = TRUE)
+```
+
+```{r, echo=FALSE}
+#Creating a subset of the dataset so that it is easier to work with
+
+dat <- subset(originaldata, select = c(USSCIDN, AGE, MONRACE, MONSEX, CRIMHIST, DRUGTYP1, SENTIMP))
+
+dat1 <-  dat[ which(dat$DRUGTYP1==4) , ]
+
+#The variables we are working with are
+#1. USSCIDN = Unique Case ID Number
+#2. AGE = Defendant Age
+#3. MONRACE = Defendant Race
+#4. MONSEX = Defendant Gender
+#5. CRIMHIST = If the Defendant has a Criminal History
+#6. DRUGTYP1 = Drug Type (Looking specifically at marijuana)
+#7. SENTIMP = Type of Sentence 
+```
+
+```{r, echo=FALSE}
+#We created white, black, prison, and non prison variables to complete the analyses. 
+
+dat2 <-  dat1[ which( dat1$MONRACE==1 | dat1$MONRACE==2 ) , ] # only keep white and black cases
+dat2$race <- dat2$MONRACE
+
+dat2$white <- NA
+dat2$white[dat2$race == "1"] <- 1
+dat2$white[dat2$race == "2"] <- 0
+
+dat2$black <- NA
+dat2$black[dat2$race == "1"] <- 0
+dat2$black[dat2$race == "2"] <- 1
+
+dat2$prison <- ifelse(dat2$SENTIMP==1 | dat2$SENTIMP==2, 1, 0) # 0: not prison, 1: prison
+```
+
+#### EXPLORATORY DATA ANALYSIS
+```{r, echo=FALSE, results=FALSE}
+#We made a bar plot of being sentenced and race
+
+library(ggplot2)
+
+sum(dat2$black) #763
+sum(dat2$white) #5365
+
+table(dat2$black,dat2$prison)
+
+#white and no prison: 299
+#white and prison : 5061
+#black and no prison: 80
+#black and prison: 683
+
+#percentage of the time that someone is sentenced to prison when they are black
+683/763 # 0.89515
+
+#percentage of the time that someone is not sentenced to prison when they are black
+80/763 # 0.10485
+
+#percentage of the time that someone is sentenced to prison when they are white
+5061/5365 # 0.94334
+
+#percentage of the time that someone is not sentenced to prison when they are black
+299/5365 #0.05573
+
+labs <- c("Black", "Black", "White", "White")
+
+prison.graph <- data.frame(avg.prop=c(0.90, 0.10, 0.94, 0.06),
+                 Legend=c("Prison", "No Prison"), labs)
+
+prison.bar <- ggplot(prison.graph, aes(x = Legend, y = avg.prop, fill = Legend)) + 
+  geom_bar(stat="identity", position = "dodge") +
+  geom_text(aes(label=avg.prop), vjust=-0.3, size=4) +
+  ylab("Average Proportion of Being Sentenced to Prison") +
+  scale_fill_manual(values = c("indianred1", "darkturquoise")) +
+  facet_wrap(vars(labs),
+             ncol = 2, 
+             nrow = 1) +
+  xlab("Sentence Outcome") +
+  ggtitle("Average Proportion of Being Sentenced to Prison Depending on Race") +  
+  theme(plot.title = element_text(hjust = 0.3)) +
+  theme_bw() +
+  scale_y_continuous(limits = c(0, 1)) + 
+  scale_x_discrete(labels=c("No Prison", "Prison", "No Prison", "Prison"))
+prison.bar
+
+ggsave(filename = "prison.bar.png", 
+       plot = prison.bar,
+       width = 12, 
+       height = 7)
+```
+To most successfully represent the variables being examined in this paper, we chose to create a bar plot representing the proportion of people sentenced and not sentenced to prison for both races included in the dataset. 
+
+#### REPRESENTATIVE MODEL AND DIAGNOSTIC INFORMATION
+For the sake of our data set, we used a logistic regression. A logistic regression model is very similar to a linear regression; however, it is used to evaluate relationships between binary variables. Because our variables - race and sentencing outcome - both have only two options for the purpose of our study, we can examine this relationship between the binaries. Rather than a standard line, the graph of fit is a logit. The application of this model is to categorical variables, and the dependent variable matches the variable type of the independent.
+
+
+```{r, echo=FALSE, results=FALSE}
+#We first ran a baseline logistic regression to look at the relationship between race and type of sentence 
+
+reg.baseline <- glm(prison ~ black, family=binomial(link='logit'), data=dat2)
+summary(reg.baseline)
+```
+
+#### LOGISTIC REGRESSION ASSUMPTIONS
+```{r, echo=FALSE}
+#We next checked the assumptions of logist regression:
+
+diag.fun.glm = function(glm.out){
+  n <- dim(glm.out$model)[1]
+  par(mfrow=c(2,3))
+  
+  # qq plot
+  #plot(glm.out, 2)
+  qqnorm(rstandard(glm.out, type="deviance"), main="QQ plot of stand. dev. residuals")
+  qqline(rstandard(glm.out, type="deviance"))
+  
+  # std. deviance vs. fitted values with horizontal lines at -2, 2
+  plot(predict.glm(glm.out, type="response"), rstandard(glm.out, type="deviance"), ylab="Stand. deviance resid.", xlab="Fitted values", main="Stand. dev. resid. vs. fitted values"); abline(h=c(0,-2,2), lty=c(1,2,2))
+  
+  # studentized residuals
+  alpha <- 0.05
+  hi <- -qnorm(alpha/(2*n),0,1)
+  lo <- qnorm(alpha/(2*n),0,1)
+  plot(predict.glm(glm.out), rstudent(glm.out, type="deviance"), ylab="Stud. deviance resid.", xlab="Fitted values", main="Stud. dev. resid. vs. fitted values", ylim=c(lo-2,hi+2)); abline(h=c(0, hi, lo), lty=c(1,2,2))  
+  
+  # cook's distance plot
+  cooks <- cooks.distance(glm.out)
+  plot(cooks, type="h", main="Cook's distance", ylab="Cook's distance", xlab="Index")
+  
+  # leverage plot
+  leverage <- hatvalues(glm.out) 
+  plot(leverage, type="h", main="Leverage", ylab="Leverage", xlab="Index")
+  
+  # cook's distance vs. leverage plot
+  plot(glm.out, 5)
+}
+
+#calling all of the plots
+diag.fun.glm(reg.baseline)
+```
+
+For the sake of our data set, we used a logistic regression. A logistic regression model is very similar to a linear regression; however, it is used to evaluate relationships between binary variables. Because our variables - race and sentencing outcome - both have only two options for the purpose of our study, we can examine this relationship between the binaries. Rather than a standard line, the graph of fit is a logit. The application of this model is to categorical variables, and the dependent variable matches the variable type of the independent.
+
+The Residual vs. Fitted Plots in this figure look to see if there are any curvilinear trends in the plots that were originally missed. Because logistic regression is already curvilinear - as demonstrated by the logit that was previously displayed - these plots do not tell us any definitive information on the validity of this regression. 
+
+The QQ plot in the figure determines if the residuals are normally distributed. This plot is not indicative of anything definitive either because residuals do not have to be normally distributed in a logistic regression. 
+
+The Residuals vs. Leverage plots help identify outliers, but this plot too is not particularly useful because the results are not definitive either. 
+From the models demonstrated in the assumptions, we do not gain information that definitively determines the strength of the logistic regression model for our data set, but the assumption display is crucial to data analysis so as to examine any particularly significant data that strays from the norm. 
+
+#### Regression Model
+```{r, echo=FALSE}
+#We created binary control variables
+
+#creating age group variables
+dat2$age1629 <- 0
+dat2$age1629[dat2$AGE >= 16 & dat2$AGE <= 29] <- 1
+
+dat2$age3049 <- 0
+dat2$age3049[dat2$AGE >= 30 & dat2$AGE <= 49] <- 1
+
+dat2$age5069 <- 0
+dat2$age5069[dat2$AGE >= 50 & dat2$AGE <= 69] <- 1
+
+dat2$age7097 <- 0
+dat2$age7097[dat2$AGE >= 70 & dat2$AGE <= 97] <- 1
+
+#creating gender variables
+dat2$male <- NA
+dat2$male[dat2$MONSEX == "0"] <- 1
+dat2$male[dat2$MONSEX == "1"] <- 0
+
+dat2$female <- NA
+dat2$female[dat2$MONSEX == "0"] <- 0
+dat2$female[dat2$MONSEX == "1"] <- 1
+
+#creating criminal history variables
+dat2$crimyes <- NA
+dat2$crimyes[dat2$CRIMHIST == "0"] <- 0
+dat2$crimyes[dat2$CRIMHIST == "1"] <- 1
+
+dat2$crimno <- NA
+dat2$crimno[dat2$CRIMHIST == "0"] <- 1
+dat2$crimno[dat2$CRIMHIST == "1"] <- 0
+```
+
+```{r, echo=FALSE, results=FALSE}
+#We then ran the same regression with our control variables
+
+reg.controls <- glm(prison ~ black + age7097 + age5069  + age3049 + female + crimno, family=binomial(link='logit'), data=dat2)
+summary(reg.controls)
+```
+
+```{r, echo=FALSE}
+#Creating a table of the regression results
+#install.packages("stargazer")
+library(stargazer)
+stargazer(reg.baseline, reg.controls, omit.stat = c("f","adj.rsq","ser","ll","aic","bic"), title="Logistic Regression Outputs", model.names = FALSE, column.labels = c("Baseline","Controls"), covariate.labels = c("Black", "Ages 70-97","Ages 50-69","Ages 30-49", "Female", "No Criminal History" , "Constant"), type="text", out="/Users/hannah/Documents/Crim 250/data/RegOutputs.txt")
+```
+
+Looking at the baseline regression, we can see that Black people in the dataset were less likely to be sentenced to prison at a significant rate. Similarly, looking at the controlled regression, we can see that Black people were more likely to not be sentenced when compared to white people in the dataset. We split the age variable into three groups (of 16-29, 30-49, 50-69, and 70-97), leaving the 16-29 group out of the regression as our control because we thought that this group would be most likely to be in possession of marijuana. To our surprise, all three age groups were more likely to be sentenced to prison for marijuana charges than people that were 16-29. This may be due to the fact that there could have been more people in these other groups, or there could have been a large number of minors in the 16-29 group that were not sentenced to prison. We split the gender variable into male or female, leaving out the male group since we thought that this group would be more likely to be sentenced to prison. Looking at the model, we can see that this is true, and females were significantly less likely to be sentenced to prison than males. Finally, we split the criminal history variable into yes or no groups, leaving out the yes group since we thought that this group would be more likely to be sentenced to prison. To our surprise, having no criminal history made the defendant more likely to be sentenced to prison, but by an insignificant amount.
+
+#### CAUSAL ANALYSIS
+Because we used the “Drug Type 1” variable, we assumed that the defendant was either only found with marijuana or the other drug(s) did not incur any penalty. This did not take into account whether or not the defendant was charged with something incurring a felony charge, such as possession of drug paraphernalia or intent to sell. In an ideal world, our data would have been clear about what the defendant was actually charged with on all fronts, rather than just what drugs they were in possession of at the time of their arrest. We also only looked at about 6,000 observations, since we dropped everyone who was not Black or white. However, there were more white people in the dataset and more white people in prison in the dataset, so the groups may not have been proportional. 
+
+##### DAG:
+    
+    BEING ARRESTED 
+    ^           |
+    |           v
+    RACE -------> BEING SENTENCED TO PRISON
+
+Additionally, the DAG portrays the situation where the defendant’s race determines whether or not they will be arrested, and therefore the arrest determines whether they will be sentenced. Not everyone who is caught with marijuana is arrested, and not everyone who is arrested for marijuana charges is convicted. Similarly, the biases of the police and prosecutors could be at play, influencing both the arrest and sentence outcome. Because of these confounders, we would not be able to conclude that there was a causal analysis.
+
+##### LIMITATIONS AND FUTURE DIRECTIONS
+
+While setting out to examine sentencing outcomes and their relationship to race for marijuana-related charges, we observed a series of confounds: 
+
+1. Sentencing charges are not equated to arrests. It is worth looking in the future into the relationship between arrests and race for marijuana-related charges.
+2. Our analysis did not include sentencing duration. Sentencing severity is a large component of the discussion for racial disparities in sentencing, not just the binary of whether someone was sentenced or not.
+3. Though we controlled for different factors such as past arrests because they are crucial in determining sentencing outcomes they should be analyzed further in conjunction with the information we observed for future studies. 
+
+This dataset is also a really interesting example of how a failure through data analysis can lead to false projections and misleading statistics. This is also a useful showcase of how easily data can also be manipulated depending on the neglect of specific outliers or parameters for the research.  As previously stated, this data set is very limited. We don’t feel it can answer our research question in an accurate way, but it still provides a good lesson on the sensitivity of datasets with outlying variables and unobserved confounders.  
+
+For future research, it could be extremely valuable to look at the current different sentencing rates across states with different laws regarding the legality and decriminalization of marijuana. All marijuana usage (whether medical or recreational) is a federal crime, so theoretically everyone in the dataset should have been arrested regardless of race. However, this is not the case, and it is important to look at how there are disparities between federal and state sentences. Additionally, state police and prosecutors have much more discretion in deciding who to arrest, and what crimes to charge. We also were only able to look at sentencing as a binary factor without the important information of arrests records in general or whether or not the defendant has been arrested for marijuana in the past. In the future, we want to do a more well-rounded in-depth data analysis including everyone who was arrested (regardless of their conviction status), as well as the state’s current laws regarding marijuana.  
+
+#### References
+Commission, U. S. S. (2014, June 25). Monitoring of federal criminal sentences, [united states], 2007.               Monitoring of Federal Criminal Sentences, [United States], 2007. Retrieved December 12, 2021, from https://www.icpsr.umich.edu/web/NACJD/studies/22623. 
+Cusick Director, J., Cusick, J., Director, Director, C. M. A., Montecinos, C., Director, A., Director, S. H.  A., Hananel, S., Oduyeru Manager, L., Oduyeru, L., Manager, Gordon	Director, P., Gordon, P., Director, J. P. D., Parshall, J., Director, D., Pearl, B., Perez, M., Chung, E., … Simpson,    E. (2021, October 28). Ending the war on drugs: By the numbers. Center for American Progress. Retrieved December 12, 2021, from https://www.americanprogress.org/article/ending-war-drugs-numbers/. 
+Rahamatulla, A. (2017, March 23). The War on Drugs has failed. what's next? Ford Foundation. Retrieved December 12, 2021, from https://www.fordfoundation.org/just-matters/just-matters/posts/the-war-on-drugs-has-failed-what-s-next/. 
+We Are The Drug Policy Alliance. (n.d.). A history of the Drug War. Drug Policy Alliance. Retrieved December 12, 2021, from https://drugpolicy.org/issues/brief-history-drug-war.
